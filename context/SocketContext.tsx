@@ -120,14 +120,14 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     // Global listener for GOAL and Card sound/toast effects
     socketInstance.on('match_event', (payload: MatchEventPayload) => {
       if (payload.type === 'GOAL') {
-        soundManager.playGoalSound();
+        soundManager.playGoalSound(payload.player);
         addToast({
           title: `⚽ GOAL! (${payload.minute}')`,
           description: payload.description || `${payload.player} scores!`,
           type: 'goal',
         });
       } else if (payload.type === 'RED_CARD') {
-        soundManager.playCardSound();
+        soundManager.playCardSound(payload.player);
         addToast({
           title: `🔴 RED CARD! (${payload.minute}')`,
           description: payload.description,
