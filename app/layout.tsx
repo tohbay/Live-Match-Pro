@@ -3,6 +3,7 @@ import "./globals.css";
 import { SocketProvider } from "@/context/SocketContext";
 import { Header } from "@/features/layout/components/Header";
 import { ConnectionBanner } from "@/features/layout/components/ConnectionBanner";
+import { NavigationLoader } from "@/features/layout/components/NavigationLoader";
 import { ToastContainer } from "@/features/common/components/GoalToast";
 
 export const metadata: Metadata = {
@@ -25,12 +26,14 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className="antialiased bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
         <SocketProvider>
-          <ConnectionBanner />
-          <Header />
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {children}
-          </main>
-          <ToastContainer />
+          <NavigationLoader>
+            <ConnectionBanner />
+            <Header />
+            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              {children}
+            </main>
+            <ToastContainer />
+          </NavigationLoader>
         </SocketProvider>
       </body>
     </html>

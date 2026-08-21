@@ -78,6 +78,7 @@ LiveMatch Pro is a production-grade, real-time football match center built with 
 - **Graceful Degradation**: Automatic redirect countdown for 404 errors with user-friendly toast messages
 - **Rate Limiting**: Client-side throttling prevents server errors with visual feedback
 - **Connection Resilience**: Manual reconnect option and automatic retry strategies
+- **Navigation Loading**: Full-screen loading overlay with animated spinner during route transitions using `usePathname` detection
 
 ---
 
