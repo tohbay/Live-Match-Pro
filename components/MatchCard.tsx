@@ -63,20 +63,24 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       href={`/match/${match.id}`}
       className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/50 shadow-lg"
     >
-      {/* Background Football Imagery (Subtle Ambient Pitch Texture) */}
+      {/* Right-Side Football Imagery with Smooth Horizontal Fade */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-12 group-hover:opacity-22 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-75 contrast-125 mix-blend-overlay"
+        className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-45 group-hover:opacity-65 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-95 saturate-120"
         style={{ 
           backgroundImage: `url('${
             isLive ? '/images/match_action.jpg' : isFinished ? '/images/stadium_pitch_tactical.jpg' : '/images/stadium_hero.jpg'
-          }')` 
+          }')`,
+          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/85 to-slate-950/95 pointer-events-none" />
 
-      {/* Background Subtle Gradient Glow for Live Matches */}
+      {/* Dark Overlay Gradient from Left to Right */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20 pointer-events-none" />
+
+      {/* Live Match Pulsing Accent Border */}
       {isLive && (
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent pointer-events-none border-l-4 border-l-rose-500" />
       )}
 
       {/* Card Content Container - Clean High-Contrast Layer */}

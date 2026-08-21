@@ -25,12 +25,16 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
 
   return (
     <div className="relative overflow-hidden glass-panel rounded-3xl p-6 border border-slate-800 space-y-6 shadow-2xl">
-      {/* Background Football Image Overlay */}
+      {/* Background Football Image Overlay with Fade Mask */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none filter brightness-90 saturate-110"
-        style={{ backgroundImage: `url('/images/match_ball.jpg')` }}
+        className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-30 pointer-events-none filter brightness-95 saturate-110"
+        style={{ 
+          backgroundImage: `url('/images/match_ball.jpg')`,
+          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+        }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/80 to-slate-950/95 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20 pointer-events-none" />
 
       <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 pb-4">
         <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
