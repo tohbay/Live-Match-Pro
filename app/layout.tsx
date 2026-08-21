@@ -8,6 +8,11 @@ import { ToastContainer } from '@/components/GoalToast';
 export const metadata: Metadata = {
   title: 'LiveMatch Pro - Real-Time Football Center',
   description: 'Track live football scores, events, match statistics, and join fan chat in real-time.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({
