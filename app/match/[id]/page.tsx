@@ -160,16 +160,32 @@ export default function MatchDetailPage({ params }: MatchPageProps) {
       }
     };
 
+    const handleSocketError = (err: { code?: string; message?: string }) => {
+      const msg = err.message || '';
+      if (
+        msg.toLowerCase().includes('not found') ||
+        msg.toLowerCase().includes('cannot subscribe') ||
+        msg.toLowerCase().includes('match')
+      ) {
+        setError('Match not found or subscription unavailable.');
+        setIsLoading(false);
+        setRedirectCountdown(3);
+        unsubscribeMatch(matchId);
+      }
+    };
+
     socket.on('score_update', handleScore);
     socket.on('status_change', handleStatus);
     socket.on('stats_update', handleStats);
     socket.on('match_event', handleEvent);
+    socket.on('error', handleSocketError);
 
     return () => {
       socket.off('score_update', handleScore);
       socket.off('status_change', handleStatus);
       socket.off('stats_update', handleStats);
       socket.off('match_event', handleEvent);
+      socket.off('error', handleSocketError);
     };
   }, [socket, matchId]);
 
