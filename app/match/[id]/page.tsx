@@ -1,0 +1,260 @@
+'use client';
+
+import React, { useEffect, useState, use } from 'react';
+import Link from 'next/link';
+import { fetchMatchById } from '@/lib/api';
+import { Match, MatchEvent, MatchStatistics as StatsType } from '@/types/match';
+import {
+  useSocket,
+  ScoreUpdatePayload,
+  StatusChangePayload,
+  StatsUpdatePayload,
+  MatchEventPayload,
+} from '@/context/SocketContext';
+import { MatchScoreboard } from '@/components/MatchScoreboard';
+import { MatchTimeline } from '@/components/MatchTimeline';
+import { MatchStatistics } from '@/components/MatchStatistics';
+import { MatchChat } from '@/components/MatchChat';
+import { ArrowLeft, Activity, BarChart3, MessageSquare, AlertCircle, RefreshCw } from 'lucide-react';
+
+interface MatchPageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function MatchDetailPage({ params }: MatchPageProps) {
+  const resolvedParams = use(params);
+  const matchId = resolvedParams.id;
+
+  const [match, setMatch] = useState<Match | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isScoreFlashing, setIsScoreFlashing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'timeline' | 'stats'>('timeline');
+
+  const { socket, subscribeMatch, unsubscribeMatch } = useSocket();
+
+  const loadMatch = async () => {
+    try {
+      setError(null);
+      const data = await fetchMatchById(matchId);
+      if (!data) {
+        setError('Match not found or invalid ID.');
+      } else {
+        setMatch(data);
+      }
+    } catch (err) {
+      setError('Unable to load match details.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadMatch();
+  }, [matchId]);
+
+  // Subscribe to live updates on socket
+  useEffect(() => {
+    if (!matchId) return;
+    subscribeMatch(matchId);
+
+    return () => {
+      unsubscribeMatch(matchId);
+    };
+  }, [matchId, subscribeMatch, unsubscribeMatch]);
+
+  // Listen for socket events
+  useEffect(() => {
+    if (!socket || !matchId) return;
+
+    const handleScore = (payload: ScoreUpdatePayload) => {
+      if (payload.matchId === matchId) {
+        setMatch((prev) =>
+          prev
+            ? {
+                ...prev,
+                homeScore: payload.homeScore,
+                awayScore: payload.awayScore,
+              }
+            : null
+        );
+        setIsScoreFlashing(true);
+        setTimeout(() => setIsScoreFlashing(false), 2000);
+      }
+    };
+
+    const handleStatus = (payload: StatusChangePayload) => {
+      if (payload.matchId === matchId) {
+        setMatch((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: payload.status,
+                minute: payload.minute,
+              }
+            : null
+        );
+      }
+    };
+
+    const handleStats = (payload: StatsUpdatePayload) => {
+      if (payload.matchId === matchId) {
+        setMatch((prev) =>
+          prev
+            ? {
+                ...prev,
+                statistics: payload.statistics,
+              }
+            : null
+        );
+      }
+    };
+
+    const handleEvent = (payload: MatchEventPayload) => {
+      if (payload.matchId === matchId) {
+        setMatch((prev) => {
+          if (!prev) return null;
+          const newEvent: MatchEvent = {
+            id: payload.id || Math.random().toString(),
+            type: payload.type,
+            minute: payload.minute,
+            team: payload.team,
+            player: payload.player,
+            assistPlayer: payload.assistPlayer,
+            playerOut: payload.playerOut,
+            description: payload.description,
+            timestamp: payload.timestamp || new Date().toISOString(),
+          };
+
+          const existingEvents = prev.events || [];
+          // Avoid duplicate events if already present
+          if (existingEvents.some((e) => e.id === newEvent.id)) return prev;
+
+          return {
+            ...prev,
+            events: [newEvent, ...existingEvents],
+          };
+        });
+      }
+    };
+
+    socket.on('score_update', handleScore);
+    socket.on('status_change', handleStatus);
+    socket.on('stats_update', handleStats);
+    socket.on('match_event', handleEvent);
+
+    return () => {
+      socket.off('score_update', handleScore);
+      socket.off('status_change', handleStatus);
+      socket.off('stats_update', handleStats);
+      socket.off('match_event', handleEvent);
+    };
+  }, [socket, matchId]);
+
+  return (
+    <div className="space-y-6">
+      {/* Top Back Navigation Bar */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl glass-panel text-xs sm:text-sm font-semibold text-slate-300 hover:text-white border border-slate-800 hover:border-cyan-500/40 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4 text-cyan-400" />
+          <span>Back to All Matches</span>
+        </Link>
+      </div>
+
+      {/* Loading Skeleton */}
+      {isLoading && (
+        <div className="space-y-6 animate-pulse">
+          <div className="glass-panel h-64 rounded-3xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 glass-panel h-96 rounded-3xl" />
+            <div className="glass-panel h-96 rounded-3xl" />
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {error && !isLoading && (
+        <div className="glass-panel border border-rose-500/30 p-8 rounded-3xl text-center space-y-4 max-w-md mx-auto my-12">
+          <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
+          <h3 className="text-lg font-bold text-rose-200">{error}</h3>
+          <button
+            onClick={loadMatch}
+            className="px-4 py-2 rounded-xl bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/40 text-xs font-semibold cursor-pointer"
+          >
+            Retry Loading
+          </button>
+        </div>
+      )}
+
+      {/* Match Content */}
+      {!isLoading && !error && match && (
+        <>
+          {/* Main Scoreboard */}
+          <MatchScoreboard match={match} isScoreFlashing={isScoreFlashing} />
+
+          {/* Grid Layout: Details & Chat */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Main Column: Timeline & Stats */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Tab Selector */}
+              <div className="flex items-center gap-2 p-1.5 rounded-2xl glass-panel border border-slate-800">
+                <button
+                  onClick={() => setActiveTab('timeline')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeTab === 'timeline'
+                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-md shadow-cyan-500/20'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <Activity className="w-4 h-4" />
+                  <span>Timeline & Events</span>
+                  {match.events && match.events.length > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-950/30 font-mono">
+                      {match.events.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('stats')}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeTab === 'stats'
+                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 shadow-md shadow-cyan-500/20'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Match Statistics</span>
+                </button>
+              </div>
+
+              {/* Tab Panels */}
+              {activeTab === 'timeline' ? (
+                <MatchTimeline
+                  events={match.events || []}
+                  homeTeamName={match.homeTeam.name}
+                  awayTeamName={match.awayTeam.name}
+                />
+              ) : (
+                <MatchStatistics
+                  statistics={match.statistics}
+                  homeTeamName={match.homeTeam.name}
+                  awayTeamName={match.awayTeam.name}
+                />
+              )}
+            </div>
+
+            {/* Right Column: Live Fan Chat */}
+            <div className="lg:col-span-5">
+              <MatchChat matchId={matchId} />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
