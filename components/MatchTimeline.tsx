@@ -24,8 +24,15 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
   const sortedEvents = [...events].sort((a, b) => b.minute - a.minute);
 
   return (
-    <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-6">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+    <div className="relative overflow-hidden glass-panel rounded-3xl p-6 border border-slate-800 space-y-6 shadow-2xl">
+      {/* Background Football Image Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none filter brightness-90 saturate-110"
+        style={{ backgroundImage: `url('/images/match_ball.jpg')` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/80 to-slate-950/95 pointer-events-none" />
+
+      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 pb-4">
         <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
           <span>Match Timeline</span>
           <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">
@@ -39,7 +46,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
         </div>
       </div>
 
-      <div className="relative space-y-4 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800">
+      <div className="relative z-10 space-y-4 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800">
         {sortedEvents.map((ev) => (
           <TimelineEventItem key={ev.id || `${ev.type}-${ev.minute}-${Math.random()}`} event={ev} />
         ))}

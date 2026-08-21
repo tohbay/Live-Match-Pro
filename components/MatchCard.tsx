@@ -61,17 +61,22 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
   return (
     <Link
       href={`/match/${match.id}`}
-      className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/40"
+      className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/50 shadow-lg"
     >
-      {/* Background Subtle Football Pitch Texture */}
+      {/* Background Football Imagery (Active by Default) */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
-        style={{ backgroundImage: `url('/images/stadium_hero.jpg')` }}
+        className="absolute inset-0 bg-cover bg-center opacity-25 group-hover:opacity-40 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-90 saturate-120"
+        style={{ 
+          backgroundImage: `url('${
+            isLive ? '/images/match_action.jpg' : isFinished ? '/images/stadium_pitch_tactical.jpg' : '/images/stadium_hero.jpg'
+          }')` 
+        }}
       />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-950/90 pointer-events-none" />
 
       {/* Background Subtle Gradient Glow for Live Matches */}
       {isLive && (
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent pointer-events-none" />
       )}
 
       {/* Header Info: Status Badge & Start Time */}

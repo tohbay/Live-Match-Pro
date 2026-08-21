@@ -35,8 +35,15 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
   ];
 
   return (
-    <div className="glass-panel rounded-3xl p-6 border border-slate-800 space-y-5">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+    <div className="relative overflow-hidden glass-panel rounded-3xl p-6 border border-slate-800 space-y-5 shadow-2xl">
+      {/* Tactical Pitch Background Image Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none filter brightness-90 saturate-120"
+        style={{ backgroundImage: `url('/images/stadium_pitch_tactical.jpg')` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/85 to-slate-950/95 pointer-events-none" />
+
+      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 pb-4">
         <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-cyan-400" />
           <span>Match Statistics</span>
@@ -48,7 +55,7 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="relative z-10 space-y-4">
         {statItems.map((item) => (
           <StatBarRow
             key={item.label}

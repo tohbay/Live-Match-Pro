@@ -186,7 +186,14 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   const typingArray = Array.from(typingUsers.values());
 
   return (
-    <div className="glass-panel rounded-3xl border border-slate-800 flex flex-col h-[520px] overflow-hidden shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[520px] shadow-2xl">
+      {/* Background Stadium Crowd Texture */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none filter brightness-75"
+        style={{ backgroundImage: `url('/images/stadium_hero.jpg')` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/90 to-slate-950/95 pointer-events-none" />
+
       {/* User Identity Modal */}
       <UserIdentityModal
         isOpen={isIdentityModalOpen}
@@ -195,7 +202,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       />
 
       {/* Chat Header */}
-      <div className="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60">
+      <div className="relative z-10 p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60 backdrop-blur-md">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
             <MessageSquare className="w-4 h-4" />
@@ -216,7 +223,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       </div>
 
       {/* Chat Message Stream */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-3">
+      <div className="relative z-10 flex-1 p-4 overflow-y-auto space-y-3">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-2 p-6">
             <Sparkles className="w-8 h-8 text-slate-600" />
@@ -285,7 +292,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       )}
 
       {/* Message Input Box */}
-      <form onSubmit={handleSendMessage} className="p-3 border-t border-slate-800/80 bg-slate-900/80 flex items-center gap-2">
+      <form onSubmit={handleSendMessage} className="relative z-10 p-3 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur-md flex items-center gap-2">
         <div className="relative flex-1">
           <input
             type="text"
