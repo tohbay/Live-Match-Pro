@@ -24,13 +24,24 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-2xl glass-panel p-3.5 sm:p-4 border border-slate-800 shadow-xl">
+    <div
+      className={`relative overflow-hidden rounded-2xl glass-panel p-3.5 sm:p-4 border shadow-xl transition-all duration-500 ${
+        match.status === "FULL_TIME"
+          ? "border-amber-500/50 shadow-amber-500/20"
+          : "border-slate-800"
+      }`}
+    >
       {/* Background Football Action Overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-15 pointer-events-none filter brightness-90 saturate-120"
         style={{ backgroundImage: `url('/images/match_action.jpg')` }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950 pointer-events-none" />
+
+      {/* Match Ended Overlay */}
+      {match.status === "FULL_TIME" && (
+        <div className="absolute inset-0 bg-amber-500/5 pointer-events-none" />
+      )}
 
       {/* Top Bar: Integrated Back Button + League Title + Status */}
       <div className="relative z-10 flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-slate-800/80">

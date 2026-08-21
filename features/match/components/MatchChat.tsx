@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useSocket, UserPresencePayload } from "@/context/SocketContext";
 import { ChatMessage, TypingIndicatorPayload } from "@/types/match";
 import { UserIdentityModal } from "@/features/common/components/UserIdentityModal";
+import { RateLimiter } from "@/lib/rateLimiter";
 import {
   Send,
   MessageSquare,
@@ -39,9 +40,12 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     new Map(),
   ); // userId -> username
   const [chatError, setChatError] = useState<string | null>(null);
+  const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+  const [remainingMessages, setRemainingMessages] = useState<number>(5);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const rateLimiterRef = useRef<RateLimiter>(new RateLimiter(5, 10000));
 
   // Initialize or fetch user ID & Username
   useEffect(() => {
@@ -243,6 +247,17 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       return;
     }
 
+    // Check rate limit before sending
+    const rateCheck = rateLimiterRef.current.canSendMessage();
+    if (!rateCheck.allowed) {
+      const waitSeconds = Math.ceil((rateCheck.waitTime || 0) / 1000);
+      setRateLimitError(
+        `Please wait ${waitSeconds}s before sending another message.`,
+      );
+      setTimeout(() => setRateLimitError(null), 3000);
+      return;
+    }
+
     const optimisticMsg: ChatMessage = {
       id:
         "opt_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
@@ -255,6 +270,10 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
     // Optimistic UI update for instant feedback
     setMessages((prev) => [...prev, optimisticMsg]);
+
+    // Record the message in rate limiter
+    rateLimiterRef.current.recordMessage();
+    setRemainingMessages(rateLimiterRef.current.getRemainingCount());
 
     sendChatMessage(matchId, userId, username, trimmed);
     sendTypingStop(matchId, userId);
@@ -404,6 +423,14 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       </div>
 
       {/* Rate Limit Error Banner */}
+      {rateLimitError && (
+        <div className="bg-amber-950/80 border-t border-amber-500/30 text-amber-200 text-xs px-4 py-1.5 flex items-center gap-2">
+          <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <span className="truncate">{rateLimitError}</span>
+        </div>
+      )}
+
+      {/* Server Rate Limit Error Banner */}
       {chatError && (
         <div className="bg-rose-950/80 border-t border-rose-500/30 text-rose-200 text-xs px-4 py-1.5 flex items-center gap-2">
           <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
@@ -441,7 +468,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
                   : "Set username to chat..."
               }
               maxLength={500}
-              className="w-full pl-4 pr-12 py-2.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
+              className="w-full pl-10 pr-12 py-2.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
             />
             <span
               className={`absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono ${
@@ -449,6 +476,17 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
               }`}
             >
               {inputText.length}/500
+            </span>
+            <span
+              className={`absolute left-3 top-1/2 -translate-y-1/2 text-[9px] font-mono ${
+                remainingMessages <= 1
+                  ? "text-rose-400"
+                  : remainingMessages <= 2
+                    ? "text-amber-400"
+                    : "text-slate-600"
+              }`}
+            >
+              {remainingMessages}/5
             </span>
           </div>
 

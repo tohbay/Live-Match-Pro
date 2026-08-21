@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   useSocket,
   ScoreUpdatePayload,
@@ -11,9 +11,11 @@ import { Match, MatchEvent } from "@/types/match";
 export function useMatchSocketEvents(
   matchId: string,
   setMatch: React.Dispatch<React.SetStateAction<Match | null>>,
+  setShowEndedModal?: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
-  const { socket, subscribeMatch, unsubscribeMatch } = useSocket();
+  const { socket, subscribeMatch, unsubscribeMatch, addToast } = useSocket();
   const [isScoreFlashing, setIsScoreFlashing] = useState(false);
+  const previousStatusRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!matchId) return;
@@ -26,6 +28,14 @@ export function useMatchSocketEvents(
 
   useEffect(() => {
     if (!socket || !matchId) return;
+
+    // Initialize previous status from current match data
+    setMatch((prev) => {
+      if (prev) {
+        previousStatusRef.current = prev.status;
+      }
+      return prev;
+    });
 
     const handleScore = (payload: ScoreUpdatePayload) => {
       if (payload.matchId === matchId) {
@@ -45,6 +55,8 @@ export function useMatchSocketEvents(
 
     const handleStatus = (payload: StatusChangePayload) => {
       if (payload.matchId === matchId) {
+        const previousStatus = previousStatusRef.current;
+
         setMatch((prev: Match | null) =>
           prev
             ? {
@@ -54,6 +66,26 @@ export function useMatchSocketEvents(
               }
             : null,
         );
+
+        // Show toast when match ends (status changes to FULL_TIME)
+        if (
+          previousStatus &&
+          previousStatus !== "FULL_TIME" &&
+          payload.status === "FULL_TIME"
+        ) {
+          addToast({
+            title: "🏁 Full Time",
+            description:
+              "The match has ended. Check the final score and statistics!",
+            type: "status",
+          });
+          // Show modal if callback provided
+          if (setShowEndedModal) {
+            setShowEndedModal(true);
+          }
+        }
+
+        previousStatusRef.current = payload.status;
       }
     };
 
@@ -124,7 +156,7 @@ export function useMatchSocketEvents(
       socket.off("match_event", handleEvent);
       socket.off("error", handleSocketError);
     };
-  }, [socket, matchId, setMatch, unsubscribeMatch]);
+  }, [socket, matchId, setMatch, unsubscribeMatch, setShowEndedModal]);
 
   return { isScoreFlashing };
 }

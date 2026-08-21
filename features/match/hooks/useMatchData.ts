@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchMatchById } from "@/lib/api";
 import { Match } from "@/types/match";
+import { useSocket } from "@/context/SocketContext";
 
 export function useMatchData(matchId: string) {
   const router = useRouter();
+  const { addToast } = useSocket();
   const [match, setMatch] = useState<Match | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,8 +24,19 @@ export function useMatchData(matchId: string) {
       } else {
         setMatch(data);
       }
-    } catch (err) {
-      setError("Unable to load match details.");
+    } catch (err: any) {
+      // Check if it's a 404 error specifically
+      if (err.message?.includes("404") || err.message?.includes("Not Found")) {
+        setError("Match not found. It may have ended or been removed.");
+        addToast({
+          title: "Match Not Available",
+          description:
+            "This match is no longer available. Redirecting to home page...",
+          type: "error",
+        });
+      } else {
+        setError("Unable to load match details.");
+      }
       setRedirectCountdown(4);
       console.error(err);
     } finally {

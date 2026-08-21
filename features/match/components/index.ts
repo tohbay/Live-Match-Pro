@@ -5,3 +5,4 @@ export { MatchStatistics } from "./MatchStatistics";
 export { MatchTimeline } from "./MatchTimeline";
 export { MatchTabSelector } from "./MatchTabSelector";
 export { MatchLoadingError } from "./MatchLoadingError";
+export { MatchEndedModal } from "./MatchEndedModal";

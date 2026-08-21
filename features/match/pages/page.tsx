@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, use, useEffect } from "react";
 import { Match } from "@/types/match";
 import { MatchScoreboard } from "@/features/match/components/MatchScoreboard";
 import { MatchTimeline } from "@/features/match/components/MatchTimeline";
@@ -8,6 +8,7 @@ import { MatchStatistics } from "@/features/match/components/MatchStatistics";
 import { MatchChat } from "@/features/match/components/MatchChat";
 import { MatchTabSelector } from "@/features/match/components/MatchTabSelector";
 import { MatchLoadingError } from "@/features/match/components/MatchLoadingError";
+import { MatchEndedModal } from "@/features/match/components/MatchEndedModal";
 import { MessageSquare } from "lucide-react";
 import { useMatchData } from "@/features/match/hooks/useMatchData";
 import { useMatchSocketEvents } from "@/features/match/hooks/useMatchSocketEvents";
@@ -20,10 +21,21 @@ export default function MatchDetailPage({ params }: MatchPageProps) {
   const resolvedParams = use(params);
   const matchId = resolvedParams.id;
   const [activeTab, setActiveTab] = useState<"timeline" | "stats">("timeline");
+  const [showEndedModal, setShowEndedModal] = useState(false);
 
   const { match, setMatch, isLoading, error, redirectCountdown, loadMatch } =
     useMatchData(matchId);
-  const { isScoreFlashing } = useMatchSocketEvents(matchId, setMatch);
+  const { isScoreFlashing } = useMatchSocketEvents(
+    matchId,
+    setMatch,
+    setShowEndedModal,
+  );
+
+  useEffect(() => {
+    if (match && match.status === "FULL_TIME") {
+      setShowEndedModal(true);
+    }
+  }, [match]);
 
   return (
     <div className="space-y-4">
@@ -92,6 +104,15 @@ export default function MatchDetailPage({ params }: MatchPageProps) {
               <MatchChat matchId={matchId} />
             </div>
           </div>
+
+          {/* Match Ended Modal */}
+          {match && (
+            <MatchEndedModal
+              match={match}
+              isOpen={showEndedModal}
+              onClose={() => setShowEndedModal(false)}
+            />
+          )}
         </>
       )}
     </div>
