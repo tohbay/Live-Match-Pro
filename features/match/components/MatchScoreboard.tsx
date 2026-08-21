@@ -1,20 +1,27 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { Match } from '@/types/match';
-import { StatusPill } from '@/components/MatchCard';
-import { Clock, Trophy, ArrowLeft } from 'lucide-react';
-import { TeamLogo } from '@/components/TeamLogo';
+import React from "react";
+import Link from "next/link";
+import { Match } from "@/types/match";
+import { StatusPill } from "@/features/match/components/MatchCard";
+import { Clock, Trophy, ArrowLeft } from "lucide-react";
+import { TeamLogo } from "@/features/common/components/TeamLogo";
 
 interface MatchScoreboardProps {
   match: Match;
   isScoreFlashing: boolean;
 }
 
-export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScoreFlashing }) => {
-  const homeGoals = (match.events || []).filter((e) => e.type === 'GOAL' && e.team === 'home');
-  const awayGoals = (match.events || []).filter((e) => e.type === 'GOAL' && e.team === 'away');
+export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({
+  match,
+  isScoreFlashing,
+}) => {
+  const homeGoals = (match.events || []).filter(
+    (e) => e.type === "GOAL" && e.team === "home",
+  );
+  const awayGoals = (match.events || []).filter(
+    (e) => e.type === "GOAL" && e.team === "away",
+  );
 
   return (
     <div className="relative overflow-hidden rounded-2xl glass-panel p-3.5 sm:p-4 border border-slate-800 shadow-xl">
@@ -54,16 +61,24 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
             className="shrink-0 sm:w-12 sm:h-12"
           />
           <div className="min-w-0">
-            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.homeTeam.name}</h2>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">HOME</span>
+            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">
+              {match.homeTeam.name}
+            </h2>
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">
+              HOME
+            </span>
 
             {/* Goal Scorers */}
             {homeGoals.length > 0 && (
               <div className="mt-0.5 flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-medium">
                 <span className="text-[10px]">⚽</span>
                 {homeGoals.map((g, idx) => (
-                  <span key={g.id || `${g.player}-${g.minute}-${idx}`} className="truncate">
-                    {g.player} {g.minute}'{idx < homeGoals.length - 1 ? ',' : ''}
+                  <span
+                    key={g.id || `${g.player}-${g.minute}-${idx}`}
+                    className="truncate"
+                  >
+                    {g.player} {g.minute}'
+                    {idx < homeGoals.length - 1 ? "," : ""}
                   </span>
                 ))}
               </div>
@@ -76,21 +91,27 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
           <div
             className={`px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-2 sm:gap-3 ${
               isScoreFlashing
-                ? 'bg-emerald-500/30 border-emerald-400 scale-105 shadow-lg shadow-emerald-500/30'
-                : 'border-slate-700/80 bg-slate-900/90 shadow-md'
+                ? "bg-emerald-500/30 border-emerald-400 scale-105 shadow-lg shadow-emerald-500/30"
+                : "border-slate-700/80 bg-slate-900/90 shadow-md"
             }`}
           >
             <span
               className={`font-black text-xl sm:text-3xl font-mono ${
-                match.homeScore > match.awayScore ? 'text-emerald-400' : 'text-slate-100'
+                match.homeScore > match.awayScore
+                  ? "text-emerald-400"
+                  : "text-slate-100"
               }`}
             >
               {match.homeScore}
             </span>
-            <span className="text-slate-500 font-bold text-xs sm:text-base">:</span>
+            <span className="text-slate-500 font-bold text-xs sm:text-base">
+              :
+            </span>
             <span
               className={`font-black text-xl sm:text-3xl font-mono ${
-                match.awayScore > match.homeScore ? 'text-emerald-400' : 'text-slate-100'
+                match.awayScore > match.homeScore
+                  ? "text-emerald-400"
+                  : "text-slate-100"
               }`}
             >
               {match.awayScore}
@@ -101,16 +122,24 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
         {/* Away Team */}
         <div className="col-span-4 flex items-center justify-end gap-1.5 sm:gap-3 text-right min-w-0">
           <div className="min-w-0">
-            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.awayTeam.name}</h2>
-            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">AWAY</span>
+            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">
+              {match.awayTeam.name}
+            </h2>
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">
+              AWAY
+            </span>
 
             {/* Goal Scorers */}
             {awayGoals.length > 0 && (
               <div className="mt-0.5 flex flex-wrap items-center justify-end gap-1 text-[10px] sm:text-[11px] text-cyan-400 font-medium text-right">
                 <span className="text-[10px]">⚽</span>
                 {awayGoals.map((g, idx) => (
-                  <span key={g.id || `${g.player}-${g.minute}-${idx}`} className="truncate">
-                    {g.player} {g.minute}'{idx < awayGoals.length - 1 ? ',' : ''}
+                  <span
+                    key={g.id || `${g.player}-${g.minute}-${idx}`}
+                    className="truncate"
+                  >
+                    {g.player} {g.minute}'
+                    {idx < awayGoals.length - 1 ? "," : ""}
                   </span>
                 ))}
               </div>

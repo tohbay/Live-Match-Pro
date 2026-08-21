@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, Sparkles } from 'lucide-react';
+import { User, Check } from 'lucide-react';
 
 interface UserIdentityModalProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ export const UserIdentityModal: React.FC<UserIdentityModalProps> = ({
   onSave,
   initialName = '',
 }) => {
-  const [name, setName] = useState(initialName);
+  const [name, setName] = useState(initialName || '');
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
@@ -51,7 +51,9 @@ export const UserIdentityModal: React.FC<UserIdentityModalProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Your Display Name</label>
+            <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              Display Username
+            </label>
             <input
               type="text"
               value={name}
@@ -59,20 +61,20 @@ export const UserIdentityModal: React.FC<UserIdentityModalProps> = ({
                 setName(e.target.value);
                 setError('');
               }}
-              placeholder="e.g. RedDevil99 or Culer_Fan"
+              placeholder="e.g. Alex10, FootballFan"
               maxLength={20}
+              className="w-full px-4 py-2.5 rounded-xl glass-panel border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 transition-all"
               autoFocus
-              className="w-full px-4 py-2.5 rounded-xl glass-panel border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20"
             />
             {error && <p className="text-xs text-rose-400 mt-1">{error}</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-slate-950 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-lg shadow-cyan-500/20 cursor-pointer flex items-center justify-center gap-2 text-sm"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-extrabold text-slate-950 hover:from-cyan-400 hover:to-blue-500 text-sm transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Start Chatting</span>
+            <Check className="w-4 h-4" />
+            <span>Set Handle & Join Chat</span>
           </button>
         </form>
       </div>

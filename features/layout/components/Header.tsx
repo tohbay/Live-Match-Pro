@@ -1,18 +1,25 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Volume2, VolumeX, User, ShieldCheck, Trophy, Radio } from 'lucide-react';
-import { soundManager } from '@/lib/sound';
-import { ConnectionStatusBadge } from './ConnectionBanner';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  Volume2,
+  VolumeX,
+  User,
+  ShieldCheck,
+  Trophy,
+  Radio,
+} from "lucide-react";
+import { soundManager } from "@/lib/sound";
+import { ConnectionStatusBadge } from "@/features/layout/components/ConnectionBanner";
 
 export const Header: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
-  const [username, setUsername] = useState<string>('Guest');
+  const [username, setUsername] = useState<string>("Guest");
 
   useEffect(() => {
     setIsMuted(soundManager.getMutedState());
-    const storedName = localStorage.getItem('livematch_username');
+    const storedName = localStorage.getItem("livematch_username");
     if (storedName) {
       setUsername(storedName);
     }
@@ -24,12 +31,12 @@ export const Header: React.FC = () => {
   };
 
   const handleChangeUsername = () => {
-    const input = prompt('Enter your display name for match chat:', username);
+    const input = prompt("Enter your display name for match chat:", username);
     if (input && input.trim()) {
       const cleanName = input.trim().substring(0, 20);
       setUsername(cleanName);
-      localStorage.setItem('livematch_username', cleanName);
-      window.dispatchEvent(new Event('username_updated'));
+      localStorage.setItem("livematch_username", cleanName);
+      window.dispatchEvent(new Event("username_updated"));
     }
   };
 
@@ -50,7 +57,9 @@ export const Header: React.FC = () => {
                 PRO
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 font-medium hidden sm:block">Real-Time Football Center</p>
+            <p className="text-[10px] text-slate-400 font-medium hidden sm:block">
+              Real-Time Football Center
+            </p>
           </div>
         </Link>
 
@@ -63,12 +72,18 @@ export const Header: React.FC = () => {
             onClick={handleToggleMute}
             className={`p-1.5 sm:p-2 rounded-xl border transition-all ${
               isMuted
-                ? 'bg-slate-800/50 border-slate-700 text-slate-400 hover:text-slate-200'
-                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
+                ? "bg-slate-800/50 border-slate-700 text-slate-400 hover:text-slate-200"
+                : "bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20"
             }`}
-            title={isMuted ? 'Unmute match audio alerts' : 'Mute match audio alerts'}
+            title={
+              isMuted ? "Unmute match audio alerts" : "Mute match audio alerts"
+            }
           >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+            {isMuted ? (
+              <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            ) : (
+              <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            )}
           </button>
 
           {/* User Handle & Real Human Avatar Button */}
@@ -84,7 +99,9 @@ export const Header: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="hidden sm:inline-block max-w-[80px] md:max-w-[110px] truncate font-bold text-slate-100">{username}</span>
+            <span className="hidden sm:inline-block max-w-[80px] md:max-w-[110px] truncate font-bold text-slate-100">
+              {username}
+            </span>
           </button>
         </div>
       </div>

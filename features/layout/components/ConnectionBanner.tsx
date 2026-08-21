@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSocket } from '@/context/SocketContext';
-import { RefreshCw, WifiOff, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { RefreshCw, WifiOff, AlertCircle } from 'lucide-react';
 
 export const ConnectionStatusBadge: React.FC = () => {
   const { status, reconnect } = useSocket();

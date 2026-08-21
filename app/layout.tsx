@@ -1,17 +1,18 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { SocketProvider } from '@/context/SocketContext';
-import { Header } from '@/components/Header';
-import { ConnectionBanner } from '@/components/ConnectionBanner';
-import { ToastContainer } from '@/components/GoalToast';
+import type { Metadata } from "next";
+import "./globals.css";
+import { SocketProvider } from "@/context/SocketContext";
+import { Header } from "@/features/layout/components/Header";
+import { ConnectionBanner } from "@/features/layout/components/ConnectionBanner";
+import { ToastContainer } from "@/features/common/components/GoalToast";
 
 export const metadata: Metadata = {
-  title: 'LiveMatch Pro - Real-Time Football Center',
-  description: 'Track live football scores, events, match statistics, and join fan chat in real-time.',
+  title: "LiveMatch Pro - Real-Time Football Center",
+  description:
+    "Track live football scores, events, match statistics, and join fan chat in real-time.",
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
 };
 

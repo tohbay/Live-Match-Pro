@@ -1,24 +1,43 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useSocket, UserPresencePayload } from '@/context/SocketContext';
-import { ChatMessage, TypingIndicatorPayload } from '@/types/match';
-import { UserIdentityModal } from './UserIdentityModal';
-import { Send, MessageSquare, User, AlertCircle, Sparkles, ShieldCheck, LogOut, LogIn } from 'lucide-react';
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { useSocket, UserPresencePayload } from "@/context/SocketContext";
+import { ChatMessage, TypingIndicatorPayload } from "@/types/match";
+import { UserIdentityModal } from "@/features/common/components/UserIdentityModal";
+import {
+  Send,
+  MessageSquare,
+  User,
+  AlertCircle,
+  Sparkles,
+  ShieldCheck,
+  LogOut,
+  LogIn,
+} from "lucide-react";
 
 interface MatchChatProps {
   matchId: string;
 }
 
 export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
-  const { socket, status, joinChat, leaveChat, sendChatMessage, sendTypingStart, sendTypingStop } = useSocket();
+  const {
+    socket,
+    status,
+    joinChat,
+    leaveChat,
+    sendChatMessage,
+    sendTypingStart,
+    sendTypingStop,
+  } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputText, setInputText] = useState('');
-  const [userId, setUserId] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
+  const [inputText, setInputText] = useState("");
+  const [userId, setUserId] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
   const [hasLeftRoom, setHasLeftRoom] = useState<boolean>(false);
-  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map()); // userId -> username
+  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(
+    new Map(),
+  ); // userId -> username
   const [chatError, setChatError] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -26,14 +45,14 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
   // Initialize or fetch user ID & Username
   useEffect(() => {
-    let uId = localStorage.getItem('livematch_user_id');
+    let uId = localStorage.getItem("livematch_user_id");
     if (!uId) {
-      uId = 'user_' + Math.random().toString(36).substring(2, 9);
-      localStorage.setItem('livematch_user_id', uId);
+      uId = "user_" + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem("livematch_user_id", uId);
     }
     setUserId(uId);
 
-    const storedName = localStorage.getItem('livematch_username');
+    const storedName = localStorage.getItem("livematch_username");
     if (storedName) {
       setUsername(storedName);
     } else {
@@ -41,17 +60,25 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     }
 
     const handleNameUpdated = () => {
-      const updated = localStorage.getItem('livematch_username');
+      const updated = localStorage.getItem("livematch_username");
       if (updated) setUsername(updated);
     };
 
-    window.addEventListener('username_updated', handleNameUpdated);
-    return () => window.removeEventListener('username_updated', handleNameUpdated);
+    window.addEventListener("username_updated", handleNameUpdated);
+    return () =>
+      window.removeEventListener("username_updated", handleNameUpdated);
   }, []);
 
   // Join chat room on mount/username ready and auto-rejoin when socket status changes to connected
   useEffect(() => {
-    if (!matchId || !userId || !username || status !== 'connected' || hasLeftRoom) return;
+    if (
+      !matchId ||
+      !userId ||
+      !username ||
+      status !== "connected" ||
+      hasLeftRoom
+    )
+      return;
 
     joinChat(matchId, userId, username);
 
@@ -69,9 +96,9 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       ...prev,
       {
         matchId,
-        userId: 'system',
-        username: 'System',
-        message: 'You left the chat room.',
+        userId: "system",
+        username: "System",
+        message: "You left the chat room.",
         timestamp: new Date().toISOString(),
       },
     ]);
@@ -86,9 +113,9 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       ...prev,
       {
         matchId,
-        userId: 'system',
-        username: 'System',
-        message: 'You rejoined the chat room.',
+        userId: "system",
+        username: "System",
+        message: "You rejoined the chat room.",
         timestamp: new Date().toISOString(),
       },
     ]);
@@ -107,7 +134,10 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
               (m.id && msg.id && m.id === msg.id) ||
               (m.userId === msg.userId &&
                 m.message === msg.message &&
-                Math.abs(new Date(m.timestamp).getTime() - new Date(msg.timestamp || Date.now()).getTime()) < 3000)
+                Math.abs(
+                  new Date(m.timestamp).getTime() -
+                    new Date(msg.timestamp || Date.now()).getTime(),
+                ) < 3000),
           );
           if (isDuplicate) return prev;
           return [...prev, msg];
@@ -121,8 +151,8 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
           ...prev,
           {
             matchId,
-            userId: 'system',
-            username: 'System',
+            userId: "system",
+            username: "System",
             message: `${payload.username} joined the chat room.`,
             timestamp: new Date().toISOString(),
           },
@@ -136,8 +166,8 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
           ...prev,
           {
             matchId,
-            userId: 'system',
-            username: 'System',
+            userId: "system",
+            username: "System",
             message: `${payload.username} left the chat room.`,
             timestamp: new Date().toISOString(),
           },
@@ -160,28 +190,28 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     };
 
     const handleSocketError = (err: { code?: string; message: string }) => {
-      setChatError(err.message || 'Rate limit or chat error occurred.');
+      setChatError(err.message || "Rate limit or chat error occurred.");
       setTimeout(() => setChatError(null), 5000);
     };
 
-    socket.on('chat_message', handleChatMessage);
-    socket.on('user_joined', handleUserJoined);
-    socket.on('user_left', handleUserLeft);
-    socket.on('typing_indicator', handleTypingIndicator);
-    socket.on('error', handleSocketError);
+    socket.on("chat_message", handleChatMessage);
+    socket.on("user_joined", handleUserJoined);
+    socket.on("user_left", handleUserLeft);
+    socket.on("typing_indicator", handleTypingIndicator);
+    socket.on("error", handleSocketError);
 
     return () => {
-      socket.off('chat_message', handleChatMessage);
-      socket.off('user_joined', handleUserJoined);
-      socket.off('user_left', handleUserLeft);
-      socket.off('typing_indicator', handleTypingIndicator);
-      socket.off('error', handleSocketError);
+      socket.off("chat_message", handleChatMessage);
+      socket.off("user_joined", handleUserJoined);
+      socket.off("user_left", handleUserLeft);
+      socket.off("typing_indicator", handleTypingIndicator);
+      socket.off("error", handleSocketError);
     };
   }, [socket, matchId, userId]);
 
   // Auto-scroll chat to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, typingUsers]);
 
   // Handle Typing Indicator debounce
@@ -214,7 +244,8 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     }
 
     const optimisticMsg: ChatMessage = {
-      id: 'opt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+      id:
+        "opt_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
       matchId,
       userId,
       username,
@@ -232,14 +263,14 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       clearTimeout(typingTimeoutRef.current);
     }
 
-    setInputText('');
+    setInputText("");
   };
 
   const handleSaveIdentity = (name: string) => {
     setUsername(name);
-    localStorage.setItem('livematch_username', name);
+    localStorage.setItem("livematch_username", name);
     setIsIdentityModalOpen(false);
-    window.dispatchEvent(new Event('username_updated'));
+    window.dispatchEvent(new Event("username_updated"));
   };
 
   const typingArray = Array.from(typingUsers.values());
@@ -247,7 +278,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   return (
     <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[400px] sm:h-[480px] lg:h-[calc(100vh-340px)] min-h-[380px] shadow-2xl">
       {/* Background Stadium Crowd Texture */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none filter brightness-75"
         style={{ backgroundImage: `url('/images/stadium_hero.jpg')` }}
       />
@@ -267,7 +298,9 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
             <MessageSquare className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-slate-100">Live Match Fan Chat</h3>
+            <h3 className="font-bold text-sm text-slate-100">
+              Live Match Fan Chat
+            </h3>
             <p className="text-[10px] text-slate-400">Real-time chat room</p>
           </div>
         </div>
@@ -278,7 +311,9 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass-panel text-xs text-slate-300 hover:text-cyan-400 border border-slate-700 transition-colors"
           >
             <User className="w-3 h-3 text-cyan-400" />
-            <span className="font-medium max-w-[80px] sm:max-w-[100px] truncate">{username || 'Set Name'}</span>
+            <span className="font-medium max-w-[80px] sm:max-w-[100px] truncate">
+              {username || "Set Name"}
+            </span>
           </button>
 
           {!hasLeftRoom ? (
@@ -308,11 +343,13 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
         {messages.length === 0 ? (
           <div className="py-12 flex flex-col items-center justify-center text-center text-slate-500 space-y-2 px-6">
             <Sparkles className="w-8 h-8 text-slate-600" />
-            <p className="text-xs">No messages yet in this room. Be the first fan to say hi!</p>
+            <p className="text-xs">
+              No messages yet in this room. Be the first fan to say hi!
+            </p>
           </div>
         ) : (
           messages.map((msg, index) => {
-            const isSystem = msg.userId === 'system';
+            const isSystem = msg.userId === "system";
             const isSelf = msg.userId === userId;
 
             if (isSystem) {
@@ -328,18 +365,20 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
             return (
               <div
                 key={index}
-                className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
+                className={`flex flex-col ${isSelf ? "items-end" : "items-start"}`}
               >
                 <div className="flex items-center gap-1.5 text-[10px] text-slate-400 mb-0.5 px-1">
-                  <span className="font-semibold text-slate-300">{msg.username}</span>
+                  <span className="font-semibold text-slate-300">
+                    {msg.username}
+                  </span>
                   <span>•</span>
                   <span>{formatTime(msg.timestamp)}</span>
                 </div>
                 <div
                   className={`px-3.5 py-2 rounded-2xl text-xs max-w-[82%] break-words shadow ${
                     isSelf
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-medium rounded-tr-none'
-                      : 'bg-slate-800/90 border border-slate-700/60 text-slate-100 rounded-tl-none'
+                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-medium rounded-tr-none"
+                      : "bg-slate-800/90 border border-slate-700/60 text-slate-100 rounded-tl-none"
                   }`}
                 >
                   {msg.message}
@@ -356,7 +395,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
             <span>
               {typingArray.length === 1
                 ? `${typingArray[0]} is typing...`
-                : `${typingArray.join(', ')} are typing...`}
+                : `${typingArray.join(", ")} are typing...`}
             </span>
           </div>
         )}
@@ -375,7 +414,9 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       {/* Bottom Control: Message Input Box or Left Room Banner */}
       {hasLeftRoom ? (
         <div className="relative z-10 p-3.5 border-t border-slate-800/80 bg-slate-900/90 backdrop-blur-md flex items-center justify-between gap-3 text-xs">
-          <span className="text-slate-400 font-medium">You have left this live match chat room.</span>
+          <span className="text-slate-400 font-medium">
+            You have left this live match chat room.
+          </span>
           <button
             onClick={handleRejoinRoom}
             className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-bold text-slate-950 hover:from-emerald-400 hover:to-teal-500 transition-all shadow-md shadow-emerald-500/20 flex items-center gap-1.5 cursor-pointer shrink-0"
@@ -385,19 +426,26 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSendMessage} className="relative z-10 p-3 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur-md flex items-center gap-2">
+        <form
+          onSubmit={handleSendMessage}
+          className="relative z-10 p-3 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur-md flex items-center gap-2"
+        >
           <div className="relative flex-1">
             <input
               type="text"
               value={inputText}
               onChange={handleInputChange}
-              placeholder={username ? 'Type a message (max 500 chars)...' : 'Set username to chat...'}
+              placeholder={
+                username
+                  ? "Type a message (max 500 chars)..."
+                  : "Set username to chat..."
+              }
               maxLength={500}
               className="w-full pl-4 pr-12 py-2.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
             />
             <span
               className={`absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono ${
-                inputText.length > 450 ? 'text-amber-400' : 'text-slate-500'
+                inputText.length > 450 ? "text-amber-400" : "text-slate-500"
               }`}
             >
               {inputText.length}/500
@@ -420,8 +468,8 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 function formatTime(isoString: string): string {
   try {
     const d = new Date(isoString);
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   } catch {
-    return '';
+    return "";
   }
 }

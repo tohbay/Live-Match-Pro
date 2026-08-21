@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Match, MatchStatus } from '@/types/match';
-import { ScoreUpdatePayload, StatusChangePayload } from '@/context/SocketContext';
-import { Socket } from 'socket.io-client';
-import { ChevronRight, Clock, Flame, Calendar, Activity } from 'lucide-react';
-import { TeamLogo } from './TeamLogo';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Match, MatchStatus } from "@/types/match";
+import {
+  ScoreUpdatePayload,
+  StatusChangePayload,
+} from "@/context/SocketContext";
+import { Socket } from "socket.io-client";
+import { ChevronRight, Clock, Flame, Calendar, Activity } from "lucide-react";
+import { TeamLogo } from "@/features/common/components/TeamLogo";
 
 interface MatchCardProps {
   initialMatch: Match;
   socket: Socket | null;
 }
 
-export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) => {
+export const MatchCard: React.FC<MatchCardProps> = ({
+  initialMatch,
+  socket,
+}) => {
   const [match, setMatch] = useState<Match>(initialMatch);
   const [isScoreFlashing, setIsScoreFlashing] = useState(false);
 
@@ -47,18 +53,22 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       }
     };
 
-    socket.on('score_update', handleScoreUpdate);
-    socket.on('status_change', handleStatusChange);
+    socket.on("score_update", handleScoreUpdate);
+    socket.on("status_change", handleStatusChange);
 
     return () => {
-      socket.off('score_update', handleScoreUpdate);
-      socket.off('status_change', handleStatusChange);
+      socket.off("score_update", handleScoreUpdate);
+      socket.off("status_change", handleStatusChange);
     };
   }, [socket, match.id]);
 
-  const isLive = match.status === 'FIRST_HALF' || match.status === 'SECOND_HALF' || match.status === 'HALF_TIME';
-  const isFinished = match.status === 'FULL_TIME';
-  const isLateGame = isLive && (match.status === 'SECOND_HALF' && match.minute >= 80);
+  const isLive =
+    match.status === "FIRST_HALF" ||
+    match.status === "SECOND_HALF" ||
+    match.status === "HALF_TIME";
+  const isFinished = match.status === "FULL_TIME";
+  const isLateGame =
+    isLive && match.status === "SECOND_HALF" && match.minute >= 80;
 
   return (
     <Link
@@ -66,14 +76,19 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/50 shadow-lg"
     >
       {/* Right-Side Football Imagery with Smooth Horizontal Fade */}
-      <div 
+      <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-45 group-hover:opacity-65 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-95 saturate-120"
-        style={{ 
+        style={{
           backgroundImage: `url('${
-            isLive ? '/images/match_action.jpg' : isFinished ? '/images/stadium_pitch_tactical.jpg' : '/images/stadium_hero.jpg'
+            isLive
+              ? "/images/match_action.jpg"
+              : isFinished
+                ? "/images/stadium_pitch_tactical.jpg"
+                : "/images/stadium_hero.jpg"
           }')`,
-          maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
+          maskImage: "linear-gradient(to right, transparent 0%, black 70%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 70%)",
         }}
       />
 
@@ -85,8 +100,8 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
         <div
           className={`absolute inset-0 bg-gradient-to-r via-transparent to-transparent pointer-events-none border-l-4 transition-colors duration-500 ${
             isLateGame
-              ? 'border-l-rose-500 from-rose-500/10 animate-pulse'
-              : 'border-l-emerald-500 from-emerald-500/10'
+              ? "border-l-rose-500 from-rose-500/10 animate-pulse"
+              : "border-l-emerald-500 from-emerald-500/10"
           }`}
         />
       )}
@@ -124,13 +139,15 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
             <div
               className={`px-4 py-2 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-3 ${
                 isScoreFlashing
-                  ? 'bg-emerald-500/30 border-emerald-400 scale-110 shadow-lg shadow-emerald-500/30'
-                  : 'border-slate-700/80 bg-slate-900/90 shadow-md'
+                  ? "bg-emerald-500/30 border-emerald-400 scale-110 shadow-lg shadow-emerald-500/30"
+                  : "border-slate-700/80 bg-slate-900/90 shadow-md"
               }`}
             >
               <span
                 className={`font-black text-2xl sm:text-3xl font-mono ${
-                  match.homeScore > match.awayScore ? 'text-emerald-400' : 'text-slate-100'
+                  match.homeScore > match.awayScore
+                    ? "text-emerald-400"
+                    : "text-slate-100"
                 }`}
               >
                 {match.homeScore}
@@ -138,7 +155,9 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
               <span className="text-slate-500 font-bold text-lg">:</span>
               <span
                 className={`font-black text-2xl sm:text-3xl font-mono ${
-                  match.awayScore > match.homeScore ? 'text-emerald-400' : 'text-slate-100'
+                  match.awayScore > match.homeScore
+                    ? "text-emerald-400"
+                    : "text-slate-100"
                 }`}
               >
                 {match.awayScore}
@@ -170,36 +189,39 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
   );
 };
 
-export const StatusPill: React.FC<{ status: MatchStatus; minute: number }> = ({ status, minute }) => {
+export const StatusPill: React.FC<{ status: MatchStatus; minute: number }> = ({
+  status,
+  minute,
+}) => {
   switch (status) {
-    case 'FIRST_HALF':
+    case "FIRST_HALF":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
           <span>1ST HALF ({minute}')</span>
         </span>
       );
-    case 'SECOND_HALF':
+    case "SECOND_HALF":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
           <span>2ND HALF ({minute}')</span>
         </span>
       );
-    case 'HALF_TIME':
+    case "HALF_TIME":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
           <Activity className="w-3 h-3 text-amber-400 animate-spin" />
           <span>HALF TIME</span>
         </span>
       );
-    case 'FULL_TIME':
+    case "FULL_TIME":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
           <span>FULL TIME</span>
         </span>
       );
-    case 'NOT_STARTED':
+    case "NOT_STARTED":
     default:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
@@ -213,8 +235,8 @@ export const StatusPill: React.FC<{ status: MatchStatus; minute: number }> = ({ 
 function formatStartTime(isoString: string): string {
   try {
     const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   } catch {
-    return 'TBD';
+    return "TBD";
   }
 }
