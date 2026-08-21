@@ -5,6 +5,7 @@ import { useSocket, UserPresencePayload } from "@/context/SocketContext";
 import { ChatMessage, TypingIndicatorPayload } from "@/types/match";
 import { UserIdentityModal } from "@/features/common/components/UserIdentityModal";
 import { RateLimiter } from "@/lib/rateLimiter";
+import { fetchChatHistory } from "@/lib/api";
 import {
   Send,
   MessageSquare,
@@ -42,10 +43,79 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   const [chatError, setChatError] = useState<string | null>(null);
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
   const [remainingMessages, setRemainingMessages] = useState<number>(5);
+  const [serverHistoryReceived, setServerHistoryReceived] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const rateLimiterRef = useRef<RateLimiter>(new RateLimiter(5, 10000));
+  const previousMatchIdRef = useRef<string | null>(null);
+
+  // Load chat messages from localStorage on mount and fetch from server as fallback
+  useEffect(() => {
+    setServerHistoryReceived(false);
+
+    // First, try localStorage
+    const storedMessages = localStorage.getItem(`livematch_chat_${matchId}`);
+    if (storedMessages) {
+      try {
+        const parsed = JSON.parse(storedMessages);
+        setMessages(parsed);
+      } catch (err) {
+        console.error("Failed to parse stored chat messages:", err);
+      }
+    }
+
+    // Fetch chat history from REST API as fallback
+    const fetchHistory = async () => {
+      try {
+        const history = await fetchChatHistory(matchId);
+        if (history.length > 0) {
+          console.log("Chat history fetched from REST API:", history);
+          setServerHistoryReceived(true);
+          setMessages(history);
+          localStorage.setItem(
+            `livematch_chat_${matchId}`,
+            JSON.stringify(history),
+          );
+        }
+      } catch (err) {
+        console.error("Failed to fetch chat history from REST API:", err);
+      }
+    };
+
+    fetchHistory();
+
+    // If server doesn't provide history via socket within 3 seconds, keep REST/localStorage as backup
+    const timeout = setTimeout(() => {
+      if (!serverHistoryReceived) {
+        console.log(
+          "Server socket history not received, using REST/localStorage backup",
+        );
+      }
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [matchId]);
+
+  // Save chat messages to localStorage when they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(
+        `livematch_chat_${matchId}`,
+        JSON.stringify(messages),
+      );
+    }
+  }, [messages, matchId]);
+
+  // Clear chat messages when switching matches (regardless of match status)
+  useEffect(() => {
+    if (previousMatchIdRef.current && previousMatchIdRef.current !== matchId) {
+      // Clear previous match's chat from localStorage and state
+      localStorage.removeItem(`livematch_chat_${previousMatchIdRef.current}`);
+      setMessages([]);
+    }
+    previousMatchIdRef.current = matchId;
+  }, [matchId]);
 
   // Initialize or fetch user ID & Username
   useEffect(() => {
@@ -129,6 +199,24 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   useEffect(() => {
     if (!socket) return;
 
+    const handleChatHistory = (history: ChatMessage[]) => {
+      console.log("Chat history received:", history);
+      if (Array.isArray(history)) {
+        setServerHistoryReceived(true);
+        setMessages(history);
+        // Save server-provided history to localStorage for persistence
+        localStorage.setItem(
+          `livematch_chat_${matchId}`,
+          JSON.stringify(history),
+        );
+      }
+    };
+
+    // Log all socket events for debugging
+    socket.onAny((event, ...args) => {
+      console.log("Socket event:", event, args);
+    });
+
     const handleChatMessage = (msg: ChatMessage) => {
       if (msg.matchId === matchId) {
         setMessages((prev) => {
@@ -199,6 +287,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     };
 
     socket.on("chat_message", handleChatMessage);
+    socket.on("chat_history", handleChatHistory);
     socket.on("user_joined", handleUserJoined);
     socket.on("user_left", handleUserLeft);
     socket.on("typing_indicator", handleTypingIndicator);
@@ -206,6 +295,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
     return () => {
       socket.off("chat_message", handleChatMessage);
+      socket.off("chat_history", handleChatHistory);
       socket.off("user_joined", handleUserJoined);
       socket.off("user_left", handleUserLeft);
       socket.off("typing_indicator", handleTypingIndicator);

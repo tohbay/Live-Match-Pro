@@ -226,7 +226,11 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({
   const joinChat = useCallback(
     (matchId: string, userId: string, username: string) => {
       if (socket && socket.connected) {
+        console.log("Joining chat for match:", matchId);
         socket.emit("join_chat", { matchId, userId, username });
+        // Request chat history after joining
+        console.log("Requesting chat history for match:", matchId);
+        socket.emit("get_chat_history", { matchId });
       }
     },
     [socket],
