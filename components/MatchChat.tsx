@@ -186,7 +186,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   const typingArray = Array.from(typingUsers.values());
 
   return (
-    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[460px] shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-270px)] min-h-[460px] shadow-2xl">
       {/* Background Stadium Crowd Texture */}
       <div 
         className="absolute inset-0 bg-cover bg-center opacity-10 pointer-events-none filter brightness-75"
