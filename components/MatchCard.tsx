@@ -6,6 +6,7 @@ import { Match, MatchStatus } from '@/types/match';
 import { ScoreUpdatePayload, StatusChangePayload } from '@/context/SocketContext';
 import { Socket } from 'socket.io-client';
 import { ChevronRight, Clock, Flame, Calendar, Activity } from 'lucide-react';
+import { TeamLogo } from './TeamLogo';
 
 interface MatchCardProps {
   initialMatch: Match;
@@ -106,9 +107,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
         <div className="grid grid-cols-12 items-center gap-3 py-2">
           {/* Home Team */}
           <div className="col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="w-12 h-12 rounded-xl bg-slate-900/90 border border-slate-700/80 flex items-center justify-center font-bold text-lg text-emerald-400 mb-2 shadow-md group-hover:scale-105 transition-transform">
-              {match.homeTeam.shortName || match.homeTeam.name.substring(0, 3).toUpperCase()}
-            </div>
+            <TeamLogo
+              teamName={match.homeTeam.name}
+              shortName={match.homeTeam.shortName}
+              size="md"
+              className="mb-2 group-hover:scale-110 transition-transform"
+            />
             <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors drop-shadow-sm">
               {match.homeTeam.name}
             </span>
@@ -149,9 +153,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
 
           {/* Away Team */}
           <div className="col-span-4 flex flex-col items-center sm:items-end text-center sm:text-right">
-            <div className="w-12 h-12 rounded-xl bg-slate-900/90 border border-slate-700/80 flex items-center justify-center font-bold text-lg text-cyan-400 mb-2 shadow-md group-hover:scale-105 transition-transform">
-              {match.awayTeam.shortName || match.awayTeam.name.substring(0, 3).toUpperCase()}
-            </div>
+            <TeamLogo
+              teamName={match.awayTeam.name}
+              shortName={match.awayTeam.shortName}
+              size="md"
+              className="mb-2 group-hover:scale-110 transition-transform"
+            />
             <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors drop-shadow-sm">
               {match.awayTeam.name}
             </span>

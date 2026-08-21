@@ -4,6 +4,7 @@ import React from 'react';
 import { Match } from '@/types/match';
 import { StatusPill } from '@/components/MatchCard';
 import { Calendar, Clock, Trophy } from 'lucide-react';
+import { TeamLogo } from '@/components/TeamLogo';
 
 interface MatchScoreboardProps {
   match: Match;
@@ -34,9 +35,12 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
       <div className="relative z-10 grid grid-cols-12 items-center gap-4">
         {/* Home Team */}
         <div className="col-span-4 flex flex-col items-center text-center">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center font-extrabold text-2xl sm:text-3xl text-emerald-400 shadow-lg mb-3">
-            {match.homeTeam.shortName || match.homeTeam.name.substring(0, 3).toUpperCase()}
-          </div>
+          <TeamLogo
+            teamName={match.homeTeam.name}
+            shortName={match.homeTeam.shortName}
+            size="xl"
+            className="mb-3 hover:scale-105 transition-transform"
+          />
           <h2 className="font-extrabold text-base sm:text-xl text-slate-100 line-clamp-1">{match.homeTeam.name}</h2>
           <span className="text-xs text-slate-400 font-mono mt-0.5">HOME</span>
         </div>
@@ -75,9 +79,12 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
 
         {/* Away Team */}
         <div className="col-span-4 flex flex-col items-center text-center">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center font-extrabold text-2xl sm:text-3xl text-cyan-400 shadow-lg mb-3">
-            {match.awayTeam.shortName || match.awayTeam.name.substring(0, 3).toUpperCase()}
-          </div>
+          <TeamLogo
+            teamName={match.awayTeam.name}
+            shortName={match.awayTeam.shortName}
+            size="xl"
+            className="mb-3 hover:scale-105 transition-transform"
+          />
           <h2 className="font-extrabold text-base sm:text-xl text-slate-100 line-clamp-1">{match.awayTeam.name}</h2>
           <span className="text-xs text-slate-400 font-mono mt-0.5">AWAY</span>
         </div>
