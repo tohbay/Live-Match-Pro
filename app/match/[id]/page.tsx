@@ -174,18 +174,7 @@ export default function MatchDetailPage({ params }: MatchPageProps) {
   }, [socket, matchId]);
 
   return (
-    <div className="space-y-6">
-      {/* Top Back Navigation Bar */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl glass-panel text-xs sm:text-sm font-semibold text-slate-300 hover:text-white border border-slate-800 hover:border-cyan-500/40 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 text-cyan-400" />
-          <span>Back to All Matches</span>
-        </Link>
-      </div>
-
+    <div className="space-y-4">
       {/* Loading Skeleton */}
       {isLoading && (
         <div className="space-y-6 animate-pulse">
