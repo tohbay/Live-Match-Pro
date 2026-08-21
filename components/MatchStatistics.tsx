@@ -35,7 +35,7 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
   ];
 
   return (
-    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-270px)] min-h-[460px] shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-310px)] min-h-[520px] shadow-2xl">
       {/* Tactical Pitch Background Image Overlay with Fade Mask */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-35 pointer-events-none filter brightness-95 saturate-120"
