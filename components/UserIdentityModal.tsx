@@ -36,8 +36,12 @@ export const UserIdentityModal: React.FC<UserIdentityModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
       <div className="glass-panel max-w-md w-full p-6 sm:p-8 rounded-3xl border border-slate-800 shadow-2xl space-y-6">
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400">
-            <User className="w-7 h-7" />
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-cyan-400/80 shadow-xl mx-auto">
+            <img
+              src="/images/user_avatar.svg"
+              alt="User Avatar"
+              className="w-full h-full object-cover"
+            />
           </div>
           <h3 className="text-xl font-extrabold text-slate-100">Join Match Fan Chat</h3>
           <p className="text-xs text-slate-400">

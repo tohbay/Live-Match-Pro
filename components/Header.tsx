@@ -71,13 +71,20 @@ export const Header: React.FC = () => {
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
 
-          {/* User Handle Button */}
+          {/* User Handle & Real Human Avatar Button */}
           <button
             onClick={handleChangeUsername}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-200 hover:bg-slate-800/80 transition-colors"
+            className="flex items-center gap-2 p-1 pr-3 rounded-full glass-panel border border-cyan-500/30 text-xs sm:text-sm text-slate-200 hover:bg-slate-800/80 transition-colors group cursor-pointer shadow-md"
+            title="Click to edit your display name"
           >
-            <User className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="max-w-[100px] truncate font-medium">{username}</span>
+            <div className="w-7 h-7 rounded-full overflow-hidden border border-cyan-400/60 shadow group-hover:scale-105 transition-transform shrink-0">
+              <img
+                src="/images/user_avatar.svg"
+                alt="User Profile Avatar"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="max-w-[110px] truncate font-bold text-slate-100">{username}</span>
           </button>
         </div>
       </div>
