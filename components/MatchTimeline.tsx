@@ -24,7 +24,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
   const sortedEvents = [...events].sort((a, b) => b.minute - a.minute);
 
   return (
-    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-310px)] min-h-[520px] shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-340px)] min-h-[400px] shadow-2xl">
       {/* Background Football Image Overlay with Fade Mask */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-30 pointer-events-none filter brightness-95 saturate-110"
