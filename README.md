@@ -2,6 +2,8 @@
 
 LiveMatch Pro is a production-grade, real-time football match center built with **Next.js 16 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Socket.IO client**. It connects directly to the production backend API at `https://profootball.srv883830.hstgr.cloud` and `wss://profootball.srv883830.hstgr.cloud`.
 
+**🚀 Deployed URL:** [https://live-match-pro.onrender.com/](https://live-match-pro.onrender.com/)
+
 ---
 
 ## 🌟 Key Features
