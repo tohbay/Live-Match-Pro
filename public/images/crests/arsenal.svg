@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Outer Shield -->
+  <path d="M 50,4 Q 86,4 88,42 Q 88,78 50,96 Q 12,78 12,42 Q 14,4 50,4 Z" fill="#EF0107" stroke="#9C824A" stroke-width="2.5"/>
+  <!-- Top Navy Banner -->
+  <path d="M 14,14 L 86,14 L 82,4 L 18,4 Z" fill="#063672"/>
+  <text x="50" y="11" font-family="Arial, sans-serif" font-weight="900" font-size="7" fill="#FFFFFF" text-anchor="middle">ARSENAL</text>
+  <!-- Center Cannon Silhouette -->
+  <g fill="#9C824A">
+    <!-- Cannon Barrel -->
+    <rect x="22" y="48" width="50" height="8" rx="2"/>
+    <rect x="18" y="46" width="6" height="12" rx="1"/>
+    <!-- Cannon Wheels -->
+    <circle cx="58" cy="62" r="12" fill="#063672" stroke="#9C824A" stroke-width="2"/>
+    <circle cx="58" cy="62" r="4" fill="#9C824A"/>
+    <!-- Cannon Stand -->
+    <path d="M 35,56 L 50,66 L 42,66 Z" fill="#9C824A"/>
+  </g>
+</svg>

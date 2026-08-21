@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="barcaBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#154284" />
+      <stop offset="100%" stop-color="#7B1A2C" />
+    </linearGradient>
+  </defs>
+  <!-- Outer Gold Shield -->
+  <path d="M 50,5 Q 85,5 90,40 Q 90,75 50,95 Q 10,75 10,40 Q 15,5 50,5 Z" fill="#EDBB00" stroke="#154284" stroke-width="2"/>
+  <!-- Inner Shield -->
+  <path d="M 50,8 Q 82,8 86,40 Q 86,72 50,91 Q 14,72 14,40 Q 18,8 50,8 Z" fill="#154284"/>
+  <!-- Top Left St George Cross -->
+  <path d="M 18,12 L 48,12 L 48,40 L 18,40 Z" fill="#FFFFFF"/>
+  <path d="M 30,12 L 36,12 L 36,40 L 30,40 Z" fill="#DB0030"/>
+  <path d="M 18,23 L 48,23 L 48,29 L 18,29 Z" fill="#DB0030"/>
+  <!-- Top Right Senyera Flag (Yellow Red Stripes) -->
+  <path d="M 52,12 L 82,12 L 82,40 L 52,40 Z" fill="#EDBB00"/>
+  <path d="M 58,12 L 62,12 L 62,40 L 58,40 Z" fill="#DB0030"/>
+  <path d="M 68,12 L 72,12 L 72,40 L 68,40 Z" fill="#DB0030"/>
+  <path d="M 77,12 L 81,12 L 81,40 L 77,40 Z" fill="#DB0030"/>
+  <!-- Middle Band with FCB Text -->
+  <path d="M 14,40 L 86,40 L 86,52 L 14,52 Z" fill="#EDBB00"/>
+  <text x="50" y="50" font-family="Arial, sans-serif" font-weight="900" font-size="11" fill="#154284" text-anchor="middle">F.C.B.</text>
+  <!-- Bottom Blaugrana Vertical Stripes -->
+  <path d="M 16,52 Q 16,70 50,89 Q 84,70 84,52 Z" fill="#7B1A2C"/>
+  <path d="M 30,52 L 30,83 Q 40,87 50,89 L 50,52 Z" fill="#154284"/>
+  <path d="M 60,52 L 60,86 Q 66,82 70,78 L 70,52 Z" fill="#154284"/>
+  <!-- Classic Golden Football in Center Bottom -->
+  <circle cx="50" cy="70" r="7" fill="#EDBB00" stroke="#7B1A2C" stroke-width="1"/>
+  <path d="M 45,70 Q 50,65 55,70 Q 50,75 45,70" fill="none" stroke="#7B1A2C" stroke-width="0.8"/>
+</svg>

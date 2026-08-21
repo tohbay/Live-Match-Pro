@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Outer Ring -->
+  <circle cx="50" cy="50" r="48" fill="#034694" stroke="#DBA111" stroke-width="2.5"/>
+  <!-- Inner White Ring -->
+  <circle cx="50" cy="50" r="36" fill="#FFFFFF"/>
+  <circle cx="50" cy="50" r="30" fill="#034694"/>
+  <!-- Top Text CHELSEA -->
+  <path id="textArcTop" d="M 20,50 A 30,30 0 1,1 80,50" fill="none"/>
+  <text font-family="Arial, sans-serif" font-weight="900" font-size="7" fill="#DBA111" text-anchor="middle">
+    <textPath href="#textArcTop" startOffset="50%">CHELSEA</textPath>
+  </text>
+  <!-- Bottom Text FOOTBALL CLUB -->
+  <path id="textArcBottom" d="M 80,50 A 30,30 0 0,1 20,50" fill="none"/>
+  <text font-family="Arial, sans-serif" font-weight="900" font-size="5" fill="#DBA111" text-anchor="middle">
+    <textPath href="#textArcBottom" startOffset="50%">FOOTBALL CLUB</textPath>
+  </text>
+  <!-- Center Regal Lion Silhouette -->
+  <path d="M 46,36 Q 54,34 56,40 Q 60,38 62,44 Q 58,46 54,44 Q 52,50 56,54 Q 54,58 48,56 Q 44,60 42,66 Q 46,68 50,66 L 50,68 Q 44,70 40,64 Q 38,56 42,50 Q 40,44 46,36 Z" fill="#FFFFFF"/>
+  <!-- Red Football Accent Balls on sides -->
+  <circle cx="21" cy="50" r="3" fill="#D11241"/>
+  <circle cx="79" cy="50" r="3" fill="#D11241"/>
+</svg>

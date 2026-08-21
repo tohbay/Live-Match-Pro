@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { Shield } from 'lucide-react';
 
 interface TeamLogoProps {
   teamName: string;
@@ -28,123 +26,58 @@ export const TeamLogo: React.FC<TeamLogoProps> = ({
     xl: 'w-20 h-20 text-2xl',
   }[size];
 
-  // Check for image crests
+  // Map team names / codes to crest files
+  let logoSrc: string | null = null;
+  let borderColor = 'border-slate-700/80';
+
   if (nameLower.includes('real madrid') || code === 'RMA') {
+    logoSrc = '/images/crests/real_madrid.jpg';
+    borderColor = 'border-amber-400/50';
+  } else if (nameLower.includes('manchester united') || code === 'MUN') {
+    logoSrc = '/images/crests/man_utd.jpg';
+    borderColor = 'border-red-500/50';
+  } else if (nameLower.includes('barcelona') || code === 'BAR' || code === 'FCB') {
+    logoSrc = '/images/crests/barcelona.svg';
+    borderColor = 'border-amber-400/50';
+  } else if (nameLower.includes('chelsea') || code === 'CHE') {
+    logoSrc = '/images/crests/chelsea.svg';
+    borderColor = 'border-cyan-400/50';
+  } else if (nameLower.includes('liverpool') || code === 'LIV') {
+    logoSrc = '/images/crests/liverpool.svg';
+    borderColor = 'border-rose-500/50';
+  } else if (nameLower.includes('arsenal') || code === 'ARS') {
+    logoSrc = '/images/crests/arsenal.svg';
+    borderColor = 'border-red-500/50';
+  } else if (nameLower.includes('bayern') || code === 'BAY') {
+    logoSrc = '/images/crests/bayern.svg';
+    borderColor = 'border-red-500/50';
+  } else if (nameLower.includes('tottenham') || code === 'TOT') {
+    logoSrc = '/images/crests/tottenham.svg';
+    borderColor = 'border-slate-400/50';
+  }
+
+  // Render Image or SVG Crest
+  if (logoSrc) {
     return (
-      <div className={`relative rounded-2xl overflow-hidden shadow-lg border border-amber-400/40 ${dimensions} ${className}`}>
+      <div className={`relative rounded-2xl overflow-hidden shadow-lg border ${borderColor} ${dimensions} ${className}`}>
         <img
-          src="/images/crests/real_madrid.jpg"
+          src={logoSrc}
           alt={teamName}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover p-0.5"
         />
       </div>
     );
   }
 
-  if (nameLower.includes('manchester united') || code === 'MUN') {
-    return (
-      <div className={`relative rounded-2xl overflow-hidden shadow-lg border border-red-500/40 ${dimensions} ${className}`}>
-        <img
-          src="/images/crests/man_utd.jpg"
-          alt={teamName}
-          className="w-full h-full object-cover"
-        />
-      </div>
-    );
-  }
-
-  // Styled Vector Shield Badges for European Powerhouses
-  const clubThemes: Record<string, { bg: string; border: string; text: string; subText?: string; accent: string; icon: string }> = {
-    BAY: {
-      bg: 'bg-gradient-to-br from-red-600 via-red-700 to-blue-900',
-      border: 'border-red-400/50',
-      text: 'text-white font-black',
-      accent: 'FCB',
-      icon: '🔴',
-    },
-    CHE: {
-      bg: 'bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-900',
-      border: 'border-cyan-400/50',
-      text: 'text-white font-black',
-      accent: 'CFC',
-      icon: '🦁',
-    },
-    LIV: {
-      bg: 'bg-gradient-to-br from-red-700 via-rose-800 to-amber-900',
-      border: 'border-amber-400/50',
-      text: 'text-amber-200 font-black',
-      accent: 'LFC',
-      icon: '🦅',
-    },
-    ARS: {
-      bg: 'bg-gradient-to-br from-red-600 via-rose-700 to-slate-900',
-      border: 'border-amber-300/50',
-      text: 'text-white font-black',
-      accent: 'AFC',
-      icon: '💥',
-    },
-    TOT: {
-      bg: 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-800',
-      border: 'border-slate-400/50',
-      text: 'text-cyan-200 font-black',
-      accent: 'THFC',
-      icon: '🐓',
-    },
-    FCB: {
-      bg: 'bg-gradient-to-br from-blue-800 via-purple-900 to-rose-800',
-      border: 'border-amber-400/50',
-      text: 'text-yellow-300 font-black',
-      accent: 'BAR',
-      icon: '🔵🔴',
-    },
-    BAR: {
-      bg: 'bg-gradient-to-br from-blue-800 via-purple-900 to-rose-800',
-      border: 'border-amber-400/50',
-      text: 'text-yellow-300 font-black',
-      accent: 'BAR',
-      icon: '🔵🔴',
-    },
-    MCI: {
-      bg: 'bg-gradient-to-br from-sky-400 via-cyan-600 to-blue-900',
-      border: 'border-sky-300/50',
-      text: 'text-slate-950 font-black',
-      accent: 'MCFC',
-      icon: '⛵',
-    },
-    PSG: {
-      bg: 'bg-gradient-to-br from-blue-950 via-indigo-900 to-red-800',
-      border: 'border-red-500/50',
-      text: 'text-white font-black',
-      accent: 'PSG',
-      icon: '🗼',
-    },
-    JUV: {
-      bg: 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800',
-      border: 'border-amber-400/60',
-      text: 'text-amber-300 font-black',
-      accent: 'JUV',
-      icon: '⚡',
-    },
-  };
-
-  const theme = clubThemes[code] || {
-    bg: 'bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950',
-    border: 'border-cyan-500/40',
-    text: 'text-cyan-400 font-black',
-    accent: code,
-    icon: '⚽',
-  };
-
+  // Dynamic Stylized Fallback Shield Badge
   return (
     <div
-      className={`relative rounded-2xl ${theme.bg} border ${theme.border} flex flex-col items-center justify-center shadow-lg font-mono tracking-tight shrink-0 overflow-hidden group ${dimensions} ${className}`}
+      className={`relative rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-cyan-500/40 flex flex-col items-center justify-center shadow-lg font-mono tracking-tight shrink-0 overflow-hidden ${dimensions} ${className}`}
       title={teamName}
     >
-      {/* Background Accent Subtle Glow */}
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
-
-      <span className="text-[10px] sm:text-xs opacity-75 font-sans leading-none mb-0.5">{theme.icon}</span>
-      <span className={`font-extrabold leading-none ${theme.text}`}>{code}</span>
+      <span className="text-[10px] sm:text-xs opacity-75 font-sans leading-none mb-0.5">⚽</span>
+      <span className="font-extrabold leading-none text-cyan-400 font-mono">{code}</span>
     </div>
   );
 };

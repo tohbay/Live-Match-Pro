@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Outer Shield -->
+  <path d="M 50,5 Q 85,5 88,42 Q 88,78 50,96 Q 12,78 12,42 Q 15,5 50,5 Z" fill="#C8102E" stroke="#00B2A9" stroke-width="2.5"/>
+  <!-- Top Shankly Gates Ribbon -->
+  <path d="M 20,12 L 80,12 L 75,5 L 25,5 Z" fill="#00B2A9"/>
+  <text x="50" y="10" font-family="Arial, sans-serif" font-weight="900" font-size="5" fill="#FFFFFF" text-anchor="middle">YOU'LL NEVER WALK ALONE</text>
+  <!-- Center Liverbird Symbol -->
+  <path d="M 50,30 Q 56,26 58,34 Q 64,32 62,42 Q 56,44 52,40 Q 50,46 54,52 Q 52,60 46,58 Q 42,64 42,72 Q 46,74 52,72 Q 44,78 38,70 Q 36,60 42,50 Q 40,42 50,30 Z" fill="#F6EB61"/>
+  <!-- L.F.C. Text -->
+  <text x="50" y="85" font-family="Arial, sans-serif" font-weight="900" font-size="10" fill="#FFFFFF" text-anchor="middle">L.F.C.</text>
+  <!-- Eternal Flames on Sides -->
+  <path d="M 10,45 Q 6,40 8,35 Q 12,38 10,45 Z" fill="#F6EB61"/>
+  <path d="M 90,45 Q 94,40 92,35 Q 88,38 90,45 Z" fill="#F6EB61"/>
+</svg>
