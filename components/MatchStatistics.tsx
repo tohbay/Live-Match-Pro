@@ -100,14 +100,14 @@ const StatBarRow: React.FC<{
         </span>
       </div>
 
-      {/* Progress Bar Container */}
-      <div className="h-2 rounded-full bg-slate-900 overflow-hidden flex border border-slate-800">
+      {/* Progress Bar Container with Distinct Gap */}
+      <div className="h-2.5 rounded-full bg-slate-900/90 overflow-hidden flex gap-1 p-0.5 border border-slate-800 shadow-inner">
         <div
-          className="h-full bg-emerald-500 transition-all duration-500 rounded-l-full"
+          className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-500 rounded-full"
           style={{ width: `${homePercent}%` }}
         />
         <div
-          className="h-full bg-cyan-500 transition-all duration-500 rounded-r-full"
+          className="h-full bg-gradient-to-r from-cyan-400 to-cyan-600 transition-all duration-500 rounded-full"
           style={{ width: `${awayPercent}%` }}
         />
       </div>
