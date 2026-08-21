@@ -52,7 +52,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
       </div>
 
       {/* Scrollable Event Stream Container */}
-      <div className="relative h-full z-10 flex-1 p-5 overflow-y-auto space-y-3.5 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800/80">
+      <div className="relative z-10 flex-1 p-5 overflow-y-auto space-y-3.5 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800/80">
         {sortedEvents.map((ev) => (
           <TimelineEventItem key={ev.id || `${ev.type}-${ev.minute}-${Math.random()}`} event={ev} />
         ))}

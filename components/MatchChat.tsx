@@ -225,7 +225,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
       {/* Chat Message Stream */}
       <div className="relative z-10 flex-1 p-4 overflow-y-auto space-y-3">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-2 p-6">
+          <div className="py-12 flex flex-col items-center justify-center text-center text-slate-500 space-y-2 px-6">
             <Sparkles className="w-8 h-8 text-slate-600" />
             <p className="text-xs">No messages yet in this room. Be the first fan to say hi!</p>
           </div>
