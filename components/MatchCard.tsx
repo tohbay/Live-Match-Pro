@@ -57,6 +57,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
 
   const isLive = match.status === 'FIRST_HALF' || match.status === 'SECOND_HALF' || match.status === 'HALF_TIME';
   const isFinished = match.status === 'FULL_TIME';
+  const isLateGame = isLive && (match.status === 'SECOND_HALF' && match.minute >= 80);
 
   return (
     <Link
@@ -78,9 +79,15 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       {/* Dark Overlay Gradient from Left to Right */}
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20 pointer-events-none" />
 
-      {/* Live Match Pulsing Accent Border */}
+      {/* Live Match Accent Border (Green by default, Red in final 10 minutes) */}
       {isLive && (
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent pointer-events-none border-l-4 border-l-rose-500" />
+        <div
+          className={`absolute inset-0 bg-gradient-to-r via-transparent to-transparent pointer-events-none border-l-4 transition-colors duration-500 ${
+            isLateGame
+              ? 'border-l-rose-500 from-rose-500/10 animate-pulse'
+              : 'border-l-emerald-500 from-emerald-500/10'
+          }`}
+        />
       )}
 
       {/* Card Content Container - Clean High-Contrast Layer */}
