@@ -295,7 +295,15 @@ export default function MatchDetailPage({ params }: MatchPageProps) {
             </div>
 
             {/* Right Column: Live Fan Chat */}
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-5 space-y-6">
+              {/* Header Bar to match Left Column Tab Selector */}
+              <div className="flex items-center gap-2 p-1.5 rounded-2xl glass-panel border border-slate-800">
+                <div className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-slate-200">
+                  <MessageSquare className="w-4 h-4 text-cyan-400" />
+                  <span>Live Fan Chat</span>
+                </div>
+              </div>
+
               <MatchChat matchId={matchId} />
             </div>
           </div>

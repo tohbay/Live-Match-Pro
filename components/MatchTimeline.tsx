@@ -28,7 +28,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
       {/* Background Football Image Overlay with Fade Mask */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-30 pointer-events-none filter brightness-95 saturate-110"
-        style={{ 
+        style={{
           backgroundImage: `url('/images/match_ball.jpg')`,
           maskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 70%)',
@@ -52,7 +52,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
       </div>
 
       {/* Scrollable Event Stream Container */}
-      <div className="relative z-10 flex-1 p-5 overflow-y-auto space-y-3.5 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800/80">
+      <div className="relative h-full z-10 flex-1 p-5 overflow-y-auto space-y-3.5 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800/80">
         {sortedEvents.map((ev) => (
           <TimelineEventItem key={ev.id || `${ev.type}-${ev.minute}-${Math.random()}`} event={ev} />
         ))}
@@ -69,15 +69,14 @@ const TimelineEventItem: React.FC<{ event: MatchEvent }> = ({ event }) => {
       {/* Event Details Card */}
       <div className={`w-1/2 flex ${isHome ? 'justify-end pr-3' : 'justify-start pl-3'}`}>
         <div
-          className={`p-3 rounded-2xl border text-xs sm:text-sm max-w-xs sm:max-w-md space-y-1 transition-all ${
-            event.type === 'GOAL'
-              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-950/30'
-              : event.type === 'RED_CARD'
+          className={`p-3 rounded-2xl border text-xs sm:text-sm max-w-xs sm:max-w-md space-y-1 transition-all ${event.type === 'GOAL'
+            ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-950/30'
+            : event.type === 'RED_CARD'
               ? 'bg-rose-950/40 border-rose-500/40 text-rose-100'
               : event.type === 'YELLOW_CARD'
-              ? 'bg-amber-950/40 border-amber-500/40 text-amber-100'
-              : 'bg-slate-900/60 border-slate-800 text-slate-200'
-          }`}
+                ? 'bg-amber-950/40 border-amber-500/40 text-amber-100'
+                : 'bg-slate-900/60 border-slate-800 text-slate-200'
+            }`}
         >
           <div className="flex items-center gap-2 font-bold">
             <EventIcon type={event.type} />
