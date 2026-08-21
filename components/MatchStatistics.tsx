@@ -35,7 +35,7 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
   ];
 
   return (
-    <div className="relative overflow-hidden glass-panel rounded-3xl p-6 border border-slate-800 space-y-5 shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[520px] shadow-2xl">
       {/* Tactical Pitch Background Image Overlay with Fade Mask */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-35 pointer-events-none filter brightness-95 saturate-120"
@@ -47,7 +47,8 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
       />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20 pointer-events-none" />
 
-      <div className="relative z-10 flex items-center justify-between border-b border-slate-800/80 pb-4">
+      {/* Header */}
+      <div className="relative z-10 p-5 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60 backdrop-blur-md">
         <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-cyan-400" />
           <span>Match Statistics</span>
@@ -59,7 +60,8 @@ export const MatchStatistics: React.FC<MatchStatisticsProps> = ({
         </div>
       </div>
 
-      <div className="relative z-10 space-y-4">
+      {/* Scrollable Statistics Body */}
+      <div className="relative z-10 flex-1 p-5 overflow-y-auto space-y-4">
         {statItems.map((item) => (
           <StatBarRow
             key={item.label}
