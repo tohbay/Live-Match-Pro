@@ -11,7 +11,7 @@ interface MatchChatProps {
 }
 
 export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
-  const { socket, joinChat, leaveChat, sendChatMessage, sendTypingStart, sendTypingStop } = useSocket();
+  const { socket, status, joinChat, leaveChat, sendChatMessage, sendTypingStart, sendTypingStop } = useSocket();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [userId, setUserId] = useState<string>('');
@@ -48,16 +48,16 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
     return () => window.removeEventListener('username_updated', handleNameUpdated);
   }, []);
 
-  // Join chat room on mount/username ready and cleanup on unmount
+  // Join chat room on mount/username ready and auto-rejoin when socket status changes to connected
   useEffect(() => {
-    if (!matchId || !userId || !username) return;
+    if (!matchId || !userId || !username || status !== 'connected') return;
 
     joinChat(matchId, userId, username);
 
     return () => {
       leaveChat(matchId, userId);
     };
-  }, [matchId, userId, username, joinChat, leaveChat]);
+  }, [matchId, userId, username, status, joinChat, leaveChat]);
 
   // Handle Socket Events for Chat
   useEffect(() => {
@@ -65,7 +65,18 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
     const handleChatMessage = (msg: ChatMessage) => {
       if (msg.matchId === matchId) {
-        setMessages((prev) => [...prev, msg]);
+        setMessages((prev) => {
+          // Deduplicate if already rendered by optimistic UI
+          const isDuplicate = prev.some(
+            (m) =>
+              (m.id && msg.id && m.id === msg.id) ||
+              (m.userId === msg.userId &&
+                m.message === msg.message &&
+                Math.abs(new Date(m.timestamp).getTime() - new Date(msg.timestamp || Date.now()).getTime()) < 3000)
+          );
+          if (isDuplicate) return prev;
+          return [...prev, msg];
+        });
       }
     };
 
@@ -159,14 +170,27 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    const trimmed = inputText.trim();
+    if (!trimmed) return;
 
     if (!username) {
       setIsIdentityModalOpen(true);
       return;
     }
 
-    sendChatMessage(matchId, userId, username, inputText.trim());
+    const optimisticMsg: ChatMessage = {
+      id: 'opt_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+      matchId,
+      userId,
+      username,
+      message: trimmed,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Optimistic UI update for instant feedback
+    setMessages((prev) => [...prev, optimisticMsg]);
+
+    sendChatMessage(matchId, userId, username, trimmed);
     sendTypingStop(matchId, userId);
 
     if (typingTimeoutRef.current) {

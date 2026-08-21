@@ -191,7 +191,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   const sendChatMessage = useCallback((matchId: string, userId: string, username: string, message: string) => {
     if (socket && socket.connected) {
-      socket.emit('send_message', { matchId, userId, username, message });
+      socket.emit('send_message', { matchId, userId, username, message, text: message });
     }
   }, [socket]);
 
