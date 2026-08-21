@@ -63,86 +63,89 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       href={`/match/${match.id}`}
       className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/50 shadow-lg"
     >
-      {/* Background Football Imagery (Active by Default) */}
+      {/* Background Football Imagery (Subtle Ambient Pitch Texture) */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-25 group-hover:opacity-40 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-90 saturate-120"
+        className="absolute inset-0 bg-cover bg-center opacity-12 group-hover:opacity-22 group-hover:scale-105 transition-all duration-500 pointer-events-none filter brightness-75 contrast-125 mix-blend-overlay"
         style={{ 
           backgroundImage: `url('${
             isLive ? '/images/match_action.jpg' : isFinished ? '/images/stadium_pitch_tactical.jpg' : '/images/stadium_hero.jpg'
           }')` 
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-950/90 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/85 to-slate-950/95 pointer-events-none" />
 
       {/* Background Subtle Gradient Glow for Live Matches */}
       {isLive && (
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/5 to-transparent pointer-events-none" />
       )}
 
-      {/* Header Info: Status Badge & Start Time */}
-      <div className="flex items-center justify-between gap-2 mb-4">
-        <StatusPill status={match.status} minute={match.minute} />
+      {/* Card Content Container - Clean High-Contrast Layer */}
+      <div className="relative z-10">
+        {/* Header Info: Status Badge & Start Time */}
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <StatusPill status={match.status} minute={match.minute} />
 
-        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-          <Clock className="w-3.5 h-3.5 text-slate-500" />
-          <span>{formatStartTime(match.startTime)}</span>
-        </div>
-      </div>
-
-      {/* Main Scoreboard Content */}
-      <div className="grid grid-cols-12 items-center gap-3 py-2">
-        {/* Home Team */}
-        <div className="col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left">
-          <div className="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center font-bold text-lg text-emerald-400 mb-2 shadow-inner group-hover:scale-105 transition-transform">
-            {match.homeTeam.shortName || match.homeTeam.name.substring(0, 3).toUpperCase()}
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+            <Clock className="w-3.5 h-3.5 text-slate-500" />
+            <span>{formatStartTime(match.startTime)}</span>
           </div>
-          <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors">
-            {match.homeTeam.name}
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono">HOME</span>
         </div>
 
-        {/* Score Display */}
-        <div className="col-span-4 flex flex-col items-center justify-center">
-          <div
-            className={`px-4 py-2 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-3 ${
-              isScoreFlashing
-                ? 'bg-emerald-500/30 border-emerald-400 scale-110 shadow-lg shadow-emerald-500/30'
-                : 'border-slate-700/80 bg-slate-900/60'
-            }`}
-          >
-            <span
-              className={`font-black text-2xl sm:text-3xl font-mono ${
-                match.homeScore > match.awayScore ? 'text-emerald-400' : 'text-slate-100'
+        {/* Main Scoreboard Content */}
+        <div className="grid grid-cols-12 items-center gap-3 py-2">
+          {/* Home Team */}
+          <div className="col-span-4 flex flex-col items-center sm:items-start text-center sm:text-left">
+            <div className="w-12 h-12 rounded-xl bg-slate-900/90 border border-slate-700/80 flex items-center justify-center font-bold text-lg text-emerald-400 mb-2 shadow-md group-hover:scale-105 transition-transform">
+              {match.homeTeam.shortName || match.homeTeam.name.substring(0, 3).toUpperCase()}
+            </div>
+            <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors drop-shadow-sm">
+              {match.homeTeam.name}
+            </span>
+            <span className="text-[10px] text-slate-400 font-mono">HOME</span>
+          </div>
+
+          {/* Score Display */}
+          <div className="col-span-4 flex flex-col items-center justify-center">
+            <div
+              className={`px-4 py-2 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-3 ${
+                isScoreFlashing
+                  ? 'bg-emerald-500/30 border-emerald-400 scale-110 shadow-lg shadow-emerald-500/30'
+                  : 'border-slate-700/80 bg-slate-900/90 shadow-md'
               }`}
             >
-              {match.homeScore}
-            </span>
-            <span className="text-slate-500 font-bold text-lg">:</span>
-            <span
-              className={`font-black text-2xl sm:text-3xl font-mono ${
-                match.awayScore > match.homeScore ? 'text-emerald-400' : 'text-slate-100'
-              }`}
-            >
-              {match.awayScore}
-            </span>
+              <span
+                className={`font-black text-2xl sm:text-3xl font-mono ${
+                  match.homeScore > match.awayScore ? 'text-emerald-400' : 'text-slate-100'
+                }`}
+              >
+                {match.homeScore}
+              </span>
+              <span className="text-slate-500 font-bold text-lg">:</span>
+              <span
+                className={`font-black text-2xl sm:text-3xl font-mono ${
+                  match.awayScore > match.homeScore ? 'text-emerald-400' : 'text-slate-100'
+                }`}
+              >
+                {match.awayScore}
+              </span>
+            </div>
+
+            <div className="mt-2 flex items-center gap-1 text-[11px] text-cyan-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>Match Details</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-1 text-[11px] text-cyan-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            <span>Match Details</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+          {/* Away Team */}
+          <div className="col-span-4 flex flex-col items-center sm:items-end text-center sm:text-right">
+            <div className="w-12 h-12 rounded-xl bg-slate-900/90 border border-slate-700/80 flex items-center justify-center font-bold text-lg text-cyan-400 mb-2 shadow-md group-hover:scale-105 transition-transform">
+              {match.awayTeam.shortName || match.awayTeam.name.substring(0, 3).toUpperCase()}
+            </div>
+            <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors drop-shadow-sm">
+              {match.awayTeam.name}
+            </span>
+            <span className="text-[10px] text-slate-400 font-mono">AWAY</span>
           </div>
-        </div>
-
-        {/* Away Team */}
-        <div className="col-span-4 flex flex-col items-center sm:items-end text-center sm:text-right">
-          <div className="w-12 h-12 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center font-bold text-lg text-cyan-400 mb-2 shadow-inner group-hover:scale-105 transition-transform">
-            {match.awayTeam.shortName || match.awayTeam.name.substring(0, 3).toUpperCase()}
-          </div>
-          <span className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-cyan-400 transition-colors">
-            {match.awayTeam.name}
-          </span>
-          <span className="text-[10px] text-slate-400 font-mono">AWAY</span>
         </div>
       </div>
     </Link>
