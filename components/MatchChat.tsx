@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useSocket, UserPresencePayload } from '@/context/SocketContext';
 import { ChatMessage, TypingIndicatorPayload } from '@/types/match';
 import { UserIdentityModal } from './UserIdentityModal';
-import { Send, MessageSquare, User, AlertCircle, Sparkles, ShieldCheck } from 'lucide-react';
+import { Send, MessageSquare, User, AlertCircle, Sparkles, ShieldCheck, LogOut, LogIn } from 'lucide-react';
 
 interface MatchChatProps {
   matchId: string;
@@ -17,6 +17,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
   const [userId, setUserId] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [isIdentityModalOpen, setIsIdentityModalOpen] = useState(false);
+  const [hasLeftRoom, setHasLeftRoom] = useState<boolean>(false);
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map()); // userId -> username
   const [chatError, setChatError] = useState<string | null>(null);
 
@@ -50,14 +51,48 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
 
   // Join chat room on mount/username ready and auto-rejoin when socket status changes to connected
   useEffect(() => {
-    if (!matchId || !userId || !username || status !== 'connected') return;
+    if (!matchId || !userId || !username || status !== 'connected' || hasLeftRoom) return;
 
     joinChat(matchId, userId, username);
 
     return () => {
       leaveChat(matchId, userId);
     };
-  }, [matchId, userId, username, status, joinChat, leaveChat]);
+  }, [matchId, userId, username, status, hasLeftRoom, joinChat, leaveChat]);
+
+  const handleLeaveRoom = () => {
+    if (socket && userId) {
+      leaveChat(matchId, userId);
+    }
+    setHasLeftRoom(true);
+    setMessages((prev) => [
+      ...prev,
+      {
+        matchId,
+        userId: 'system',
+        username: 'System',
+        message: 'You left the chat room.',
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  const handleRejoinRoom = () => {
+    if (socket && userId && username) {
+      joinChat(matchId, userId, username);
+    }
+    setHasLeftRoom(false);
+    setMessages((prev) => [
+      ...prev,
+      {
+        matchId,
+        userId: 'system',
+        username: 'System',
+        message: 'You rejoined the chat room.',
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+  };
 
   // Handle Socket Events for Chat
   useEffect(() => {
@@ -237,13 +272,35 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
           </div>
         </div>
 
-        <button
-          onClick={() => setIsIdentityModalOpen(true)}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass-panel text-xs text-slate-300 hover:text-cyan-400 border border-slate-700 transition-colors"
-        >
-          <User className="w-3 h-3 text-cyan-400" />
-          <span className="font-medium max-w-[90px] truncate">{username || 'Set Name'}</span>
-        </button>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <button
+            onClick={() => setIsIdentityModalOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg glass-panel text-xs text-slate-300 hover:text-cyan-400 border border-slate-700 transition-colors"
+          >
+            <User className="w-3 h-3 text-cyan-400" />
+            <span className="font-medium max-w-[80px] sm:max-w-[100px] truncate">{username || 'Set Name'}</span>
+          </button>
+
+          {!hasLeftRoom ? (
+            <button
+              onClick={handleLeaveRoom}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold transition-colors cursor-pointer"
+              title="Leave live match chat room"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Leave</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleRejoinRoom}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold transition-colors cursor-pointer"
+              title="Rejoin live match chat room"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Rejoin</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Chat Message Stream */}
@@ -261,7 +318,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
             if (isSystem) {
               return (
                 <div key={index} className="text-center py-1">
-                  <span className="text-[11px] px-3 py-0.5 rounded-full bg-slate-900/80 text-slate-500 border border-slate-800/60 inline-block font-mono">
+                  <span className="text-[11px] px-3 py-0.5 rounded-full bg-slate-900/80 text-slate-400 border border-slate-800/60 inline-block font-mono">
                     {msg.message}
                   </span>
                 </div>
@@ -293,7 +350,7 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
         )}
 
         {/* Typing Indicators */}
-        {typingArray.length > 0 && (
+        {!hasLeftRoom && typingArray.length > 0 && (
           <div className="flex items-center gap-2 text-xs text-slate-400 italic pt-1 animate-pulse">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
             <span>
@@ -315,34 +372,47 @@ export const MatchChat: React.FC<MatchChatProps> = ({ matchId }) => {
         </div>
       )}
 
-      {/* Message Input Box */}
-      <form onSubmit={handleSendMessage} className="relative z-10 p-3 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur-md flex items-center gap-2">
-        <div className="relative flex-1">
-          <input
-            type="text"
-            value={inputText}
-            onChange={handleInputChange}
-            placeholder={username ? 'Type a message (max 500 chars)...' : 'Set username to chat...'}
-            maxLength={500}
-            className="w-full pl-4 pr-12 py-2.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
-          />
-          <span
-            className={`absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono ${
-              inputText.length > 450 ? 'text-amber-400' : 'text-slate-500'
-            }`}
+      {/* Bottom Control: Message Input Box or Left Room Banner */}
+      {hasLeftRoom ? (
+        <div className="relative z-10 p-3.5 border-t border-slate-800/80 bg-slate-900/90 backdrop-blur-md flex items-center justify-between gap-3 text-xs">
+          <span className="text-slate-400 font-medium">You have left this live match chat room.</span>
+          <button
+            onClick={handleRejoinRoom}
+            className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 font-bold text-slate-950 hover:from-emerald-400 hover:to-teal-500 transition-all shadow-md shadow-emerald-500/20 flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            {inputText.length}/500
-          </span>
+            <LogIn className="w-3.5 h-3.5" />
+            <span>Rejoin Room</span>
+          </button>
         </div>
+      ) : (
+        <form onSubmit={handleSendMessage} className="relative z-10 p-3 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur-md flex items-center gap-2">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={inputText}
+              onChange={handleInputChange}
+              placeholder={username ? 'Type a message (max 500 chars)...' : 'Set username to chat...'}
+              maxLength={500}
+              className="w-full pl-4 pr-12 py-2.5 rounded-xl glass-panel border border-slate-700 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/60"
+            />
+            <span
+              className={`absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono ${
+                inputText.length > 450 ? 'text-amber-400' : 'text-slate-500'
+              }`}
+            >
+              {inputText.length}/500
+            </span>
+          </div>
 
-        <button
-          type="submit"
-          disabled={!inputText.trim()}
-          className="p-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md shadow-cyan-500/20 shrink-0 cursor-pointer"
-        >
-          <Send className="w-4 h-4 font-bold" />
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={!inputText.trim()}
+            className="p-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md shadow-cyan-500/20 shrink-0 cursor-pointer"
+          >
+            <Send className="w-4 h-4 font-bold" />
+          </button>
+        </form>
+      )}
     </div>
   );
 };
