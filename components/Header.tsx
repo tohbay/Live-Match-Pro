@@ -55,36 +55,36 @@ export const Header: React.FC = () => {
         </Link>
 
         {/* Center / Right controls */}
-        <div className="flex items-center gap-2 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <ConnectionStatusBadge />
 
           {/* Sound Toggle */}
           <button
             onClick={handleToggleMute}
-            className={`p-2 rounded-xl border transition-all ${
+            className={`p-1.5 sm:p-2 rounded-xl border transition-all ${
               isMuted
                 ? 'bg-slate-800/50 border-slate-700 text-slate-400 hover:text-slate-200'
                 : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20'
             }`}
             title={isMuted ? 'Unmute match audio alerts' : 'Mute match audio alerts'}
           >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            {isMuted ? <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
           </button>
 
           {/* User Handle & Real Human Avatar Button */}
           <button
             onClick={handleChangeUsername}
-            className="flex items-center gap-2 p-1 pr-3 rounded-full glass-panel border border-cyan-500/30 text-xs sm:text-sm text-slate-200 hover:bg-slate-800/80 transition-colors group cursor-pointer shadow-md"
+            className="flex items-center gap-1.5 p-1 sm:pr-3 rounded-full glass-panel border border-cyan-500/30 text-xs sm:text-sm text-slate-200 hover:bg-slate-800/80 transition-colors group cursor-pointer shadow-md shrink-0"
             title="Click to edit your display name"
           >
-            <div className="w-7 h-7 rounded-full overflow-hidden border border-cyan-400/60 shadow group-hover:scale-105 transition-transform shrink-0">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full overflow-hidden border border-cyan-400/60 shadow group-hover:scale-105 transition-transform shrink-0">
               <img
                 src="/images/user_avatar.svg"
                 alt="User Profile Avatar"
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="max-w-[110px] truncate font-bold text-slate-100">{username}</span>
+            <span className="hidden sm:inline-block max-w-[80px] md:max-w-[110px] truncate font-bold text-slate-100">{username}</span>
           </button>
         </div>
       </div>

@@ -24,7 +24,7 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
   const sortedEvents = [...events].sort((a, b) => b.minute - a.minute);
 
   return (
-    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[calc(100vh-340px)] min-h-[400px] shadow-2xl">
+    <div className="relative overflow-hidden glass-panel rounded-3xl border border-slate-800 flex flex-col h-[400px] sm:h-[480px] lg:h-[calc(100vh-340px)] min-h-[380px] shadow-2xl">
       {/* Background Football Image Overlay with Fade Mask */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[65%] bg-cover bg-center opacity-30 pointer-events-none filter brightness-95 saturate-110"
@@ -37,22 +37,22 @@ export const MatchTimeline: React.FC<MatchTimelineProps> = ({ events, homeTeamNa
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/20 pointer-events-none" />
 
       {/* Header */}
-      <div className="relative z-10 p-5 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60 backdrop-blur-md">
-        <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
+      <div className="relative z-10 p-4 sm:p-5 border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-2 bg-slate-900/60 backdrop-blur-md">
+        <h3 className="font-bold text-sm sm:text-base text-slate-100 flex items-center gap-2">
           <span>Match Timeline</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">
+          <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-mono">
             {events.length} Events
           </span>
         </h3>
-        <div className="flex items-center gap-4 text-xs font-semibold text-slate-400">
-          <span className="text-emerald-400">{homeTeamName} (Home)</span>
+        <div className="flex items-center gap-2 sm:gap-4 text-[11px] sm:text-xs font-semibold text-slate-400">
+          <span className="text-emerald-400 truncate max-w-[100px] sm:max-w-none">{homeTeamName} (Home)</span>
           <span>•</span>
-          <span className="text-cyan-400">{awayTeamName} (Away)</span>
+          <span className="text-cyan-400 truncate max-w-[100px] sm:max-w-none">{awayTeamName} (Away)</span>
         </div>
       </div>
 
       {/* Scrollable Event Stream Container */}
-      <div className="relative z-10 flex-1 p-5 overflow-y-auto space-y-3.5 before:absolute before:inset-0 before:left-1/2 before:-translate-x-1/2 before:w-0.5 before:bg-slate-800/80">
+      <div className="relative z-10 flex-1 p-3 sm:p-5 overflow-y-auto space-y-3 sm:space-y-3.5 sm:before:absolute sm:before:inset-0 sm:before:left-1/2 sm:before:-translate-x-1/2 sm:before:w-0.5 sm:before:bg-slate-800/80">
         {sortedEvents.map((ev) => (
           <TimelineEventItem key={ev.id || `${ev.type}-${ev.minute}-${Math.random()}`} event={ev} />
         ))}
@@ -65,44 +65,55 @@ const TimelineEventItem: React.FC<{ event: MatchEvent }> = ({ event }) => {
   const isHome = event.team === 'home';
 
   return (
-    <div className={`relative flex items-center gap-4 ${isHome ? 'flex-row' : 'flex-row-reverse'}`}>
-      {/* Event Details Card */}
-      <div className={`w-1/2 flex ${isHome ? 'justify-end pr-3' : 'justify-start pl-3'}`}>
+    <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+      {/* Mobile Minute & Team Badge */}
+      <div className="flex items-center gap-2 sm:hidden">
+        <span className="shrink-0 w-7 h-7 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center font-mono font-bold text-[10px] text-slate-200 shadow">
+          {event.minute}'
+        </span>
+        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${isHome ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'}`}>
+          {isHome ? 'HOME' : 'AWAY'}
+        </span>
+      </div>
+
+      {/* Event Details Card (Desktop 2-Column Symmetrical vs Mobile 100% Width) */}
+      <div className={`w-full sm:w-1/2 flex ${isHome ? 'sm:justify-end sm:pr-3' : 'sm:justify-start sm:pl-3'} ${!isHome && 'sm:order-last'}`}>
         <div
-          className={`p-3 rounded-2xl border text-xs sm:text-sm max-w-xs sm:max-w-md space-y-1 transition-all ${event.type === 'GOAL'
-            ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-950/30'
-            : event.type === 'RED_CARD'
+          className={`w-full p-2.5 sm:p-3 rounded-2xl border text-xs sm:text-sm space-y-1 transition-all ${
+            event.type === 'GOAL'
+              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-100 shadow-lg shadow-emerald-950/30'
+              : event.type === 'RED_CARD'
               ? 'bg-rose-950/40 border-rose-500/40 text-rose-100'
               : event.type === 'YELLOW_CARD'
-                ? 'bg-amber-950/40 border-amber-500/40 text-amber-100'
-                : 'bg-slate-900/60 border-slate-800 text-slate-200'
-            }`}
+              ? 'bg-amber-950/40 border-amber-500/40 text-amber-100'
+              : 'bg-slate-900/60 border-slate-800 text-slate-200'
+          }`}
         >
-          <div className="flex items-center gap-2 font-bold">
+          <div className="flex flex-wrap items-center gap-1.5 font-bold">
             <EventIcon type={event.type} />
-            <span className="truncate">{event.player}</span>
+            <span className="truncate max-w-[150px] sm:max-w-none">{event.player}</span>
             {event.assistPlayer && (
-              <span className="text-[11px] text-slate-400 font-normal truncate">
+              <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal truncate">
                 (Assist: {event.assistPlayer})
               </span>
             )}
             {event.playerOut && (
-              <span className="text-[11px] text-slate-400 font-normal truncate">
+              <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal truncate">
                 (Off: {event.playerOut})
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-400">{event.description}</p>
+          {event.description && <p className="text-[11px] sm:text-xs text-slate-400 leading-snug">{event.description}</p>}
         </div>
       </div>
 
-      {/* Center Minute Marker */}
-      <div className="z-10 shrink-0 w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 flex items-center justify-center font-mono font-bold text-xs text-slate-200 shadow">
+      {/* Desktop Center Minute Marker */}
+      <div className="hidden sm:flex z-10 shrink-0 w-8 h-8 rounded-full bg-slate-900 border-2 border-slate-700 items-center justify-center font-mono font-bold text-xs text-slate-200 shadow">
         {event.minute}'
       </div>
 
-      {/* Spacer for symmetrical alignment */}
-      <div className="w-1/2" />
+      {/* Desktop Spacer for symmetrical alignment */}
+      <div className={`hidden sm:block w-1/2 ${!isHome && 'sm:order-first'}`} />
     </div>
   );
 };

@@ -41,40 +41,40 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
       </div>
 
       {/* Main Scoreboard Content */}
-      <div className="relative z-10 grid grid-cols-12 items-center gap-2">
+      <div className="relative z-10 grid grid-cols-12 items-center gap-1.5 sm:gap-3">
         {/* Home Team */}
-        <div className="col-span-4 flex items-center gap-3">
+        <div className="col-span-4 flex items-center gap-1.5 sm:gap-3 min-w-0">
           <TeamLogo
             teamName={match.homeTeam.name}
             shortName={match.homeTeam.shortName}
-            size="md"
-            className="shrink-0"
+            size="sm"
+            className="shrink-0 sm:w-12 sm:h-12"
           />
           <div className="min-w-0">
-            <h2 className="font-extrabold text-sm sm:text-base text-slate-100 truncate">{match.homeTeam.name}</h2>
-            <span className="text-[10px] text-slate-400 font-mono">HOME</span>
+            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.homeTeam.name}</h2>
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">HOME</span>
           </div>
         </div>
 
         {/* Center Score */}
         <div className="col-span-4 flex flex-col items-center justify-center">
           <div
-            className={`px-4 py-1.5 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-3 ${
+            className={`px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-xl glass-panel border transition-all duration-500 flex items-center gap-2 sm:gap-3 ${
               isScoreFlashing
                 ? 'bg-emerald-500/30 border-emerald-400 scale-105 shadow-lg shadow-emerald-500/30'
                 : 'border-slate-700/80 bg-slate-900/90 shadow-md'
             }`}
           >
             <span
-              className={`font-black text-2xl sm:text-3xl font-mono ${
+              className={`font-black text-xl sm:text-3xl font-mono ${
                 match.homeScore > match.awayScore ? 'text-emerald-400' : 'text-slate-100'
               }`}
             >
               {match.homeScore}
             </span>
-            <span className="text-slate-500 font-bold text-base">:</span>
+            <span className="text-slate-500 font-bold text-xs sm:text-base">:</span>
             <span
-              className={`font-black text-2xl sm:text-3xl font-mono ${
+              className={`font-black text-xl sm:text-3xl font-mono ${
                 match.awayScore > match.homeScore ? 'text-emerald-400' : 'text-slate-100'
               }`}
             >
@@ -84,16 +84,16 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
         </div>
 
         {/* Away Team */}
-        <div className="col-span-4 flex items-center justify-end gap-3 text-right">
+        <div className="col-span-4 flex items-center justify-end gap-1.5 sm:gap-3 text-right min-w-0">
           <div className="min-w-0">
-            <h2 className="font-extrabold text-sm sm:text-base text-slate-100 truncate">{match.awayTeam.name}</h2>
-            <span className="text-[10px] text-slate-400 font-mono">AWAY</span>
+            <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.awayTeam.name}</h2>
+            <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">AWAY</span>
           </div>
           <TeamLogo
             teamName={match.awayTeam.name}
             shortName={match.awayTeam.shortName}
-            size="md"
-            className="shrink-0"
+            size="sm"
+            className="shrink-0 sm:w-12 sm:h-12"
           />
         </div>
       </div>

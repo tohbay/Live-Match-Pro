@@ -9,18 +9,20 @@ export const ConnectionStatusBadge: React.FC = () => {
 
   if (status === 'connected') {
     return (
-      <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+      <div className="flex items-center gap-1.5 px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
-        <span>Connected Live</span>
+        <span className="hidden sm:inline">Connected Live</span>
+        <span className="sm:hidden text-[11px] font-bold">LIVE</span>
       </div>
     );
   }
 
   if (status === 'reconnecting') {
     return (
-      <div className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+      <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-        <span>Reconnecting...</span>
+        <span className="hidden sm:inline">Reconnecting...</span>
+        <span className="sm:hidden text-[11px] font-bold">Connecting</span>
       </div>
     );
   }
@@ -28,10 +30,11 @@ export const ConnectionStatusBadge: React.FC = () => {
   return (
     <button
       onClick={reconnect}
-      className="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/40 transition-all cursor-pointer"
+      className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-rose-500/20 text-rose-300 hover:bg-rose-500/30 border border-rose-500/40 transition-all cursor-pointer shrink-0"
     >
       <WifiOff className="w-3.5 h-3.5" />
-      <span>Disconnected (Retry)</span>
+      <span className="hidden sm:inline">Disconnected (Retry)</span>
+      <span className="sm:hidden text-[11px] font-bold">Retry</span>
     </button>
   );
 };
