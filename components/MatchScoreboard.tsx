@@ -13,8 +13,12 @@ interface MatchScoreboardProps {
 export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScoreFlashing }) => {
   return (
     <div className="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-8 border border-slate-800 shadow-2xl">
-      {/* Dynamic Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Dynamic Background Football Action Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-20 pointer-events-none filter brightness-90 saturate-120"
+        style={{ backgroundImage: `url('/images/match_action.jpg')` }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-slate-950/40 pointer-events-none" />
 
       {/* Top Bar: Status and League */}
       <div className="relative z-10 flex items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800/80">

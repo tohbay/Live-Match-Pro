@@ -116,7 +116,12 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Hero Welcome Banner */}
       <div className="relative overflow-hidden rounded-3xl glass-panel p-6 sm:p-8 border border-slate-800">
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Background Football Stadium Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none filter brightness-90 saturate-110"
+          style={{ backgroundImage: `url('/images/stadium_hero.jpg')` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent pointer-events-none" />
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
@@ -127,12 +132,12 @@ export default function DashboardPage() {
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
               Live Match Center
             </h1>
-            <p className="text-sm text-slate-400 mt-2 max-w-xl">
+            <p className="text-sm text-slate-300 mt-2 max-w-xl font-medium drop-shadow-sm">
               Track live scores, match timelines, possession statistics, and fan chat as fixtures unfold in real-time.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-slate-900/80 p-4 rounded-2xl border border-slate-800 shrink-0">
+          <div className="flex items-center gap-3 bg-slate-900/90 backdrop-blur-md p-4 rounded-2xl border border-slate-800 shrink-0 shadow-xl">
             <div className="text-center px-3 border-r border-slate-800">
               <div className="text-2xl font-black text-emerald-400 font-mono">{counts.live}</div>
               <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Live Now</div>

@@ -63,6 +63,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({ initialMatch, socket }) =>
       href={`/match/${match.id}`}
       className="group block relative glass-panel glass-panel-hover rounded-2xl p-5 overflow-hidden transition-all duration-300 border border-slate-800 hover:border-cyan-500/40"
     >
+      {/* Background Subtle Football Pitch Texture */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
+        style={{ backgroundImage: `url('/images/stadium_hero.jpg')` }}
+      />
+
       {/* Background Subtle Gradient Glow for Live Matches */}
       {isLive && (
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-transparent pointer-events-none" />
