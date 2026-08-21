@@ -19,7 +19,9 @@ import {
 } from "@/types/match";
 import { soundManager } from "@/lib/sound";
 
-const SOCKET_URL = "wss://profootball.srv883830.hstgr.cloud";
+const SOCKET_URL =
+  process.env.NEXT_PUBLIC_WS_BASE_URL ||
+  "wss://profootball.srv883830.hstgr.cloud";
 
 export interface ScoreUpdatePayload {
   matchId: string;

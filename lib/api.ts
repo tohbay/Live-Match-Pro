@@ -1,7 +1,9 @@
 import { Match } from "@/types/match";
 import { ChatMessage } from "@/types/match";
 
-const API_BASE_URL = "https://profootball.srv883830.hstgr.cloud";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://profootball.srv883830.hstgr.cloud";
 
 export interface ApiResponse<T> {
   success: boolean;
