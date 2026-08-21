@@ -13,6 +13,9 @@ interface MatchScoreboardProps {
 }
 
 export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScoreFlashing }) => {
+  const homeGoals = (match.events || []).filter((e) => e.type === 'GOAL' && e.team === 'home');
+  const awayGoals = (match.events || []).filter((e) => e.type === 'GOAL' && e.team === 'away');
+
   return (
     <div className="relative overflow-hidden rounded-2xl glass-panel p-3.5 sm:p-4 border border-slate-800 shadow-xl">
       {/* Background Football Action Overlay */}
@@ -53,6 +56,18 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
           <div className="min-w-0">
             <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.homeTeam.name}</h2>
             <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">HOME</span>
+
+            {/* Goal Scorers */}
+            {homeGoals.length > 0 && (
+              <div className="mt-0.5 flex flex-wrap items-center gap-1 text-[10px] sm:text-[11px] text-emerald-400 font-medium">
+                <span className="text-[10px]">⚽</span>
+                {homeGoals.map((g, idx) => (
+                  <span key={g.id || `${g.player}-${g.minute}-${idx}`} className="truncate">
+                    {g.player} {g.minute}'{idx < homeGoals.length - 1 ? ',' : ''}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -88,6 +103,18 @@ export const MatchScoreboard: React.FC<MatchScoreboardProps> = ({ match, isScore
           <div className="min-w-0">
             <h2 className="font-extrabold text-xs sm:text-base text-slate-100 truncate">{match.awayTeam.name}</h2>
             <span className="text-[9px] sm:text-[10px] text-slate-400 font-mono">AWAY</span>
+
+            {/* Goal Scorers */}
+            {awayGoals.length > 0 && (
+              <div className="mt-0.5 flex flex-wrap items-center justify-end gap-1 text-[10px] sm:text-[11px] text-cyan-400 font-medium text-right">
+                <span className="text-[10px]">⚽</span>
+                {awayGoals.map((g, idx) => (
+                  <span key={g.id || `${g.player}-${g.minute}-${idx}`} className="truncate">
+                    {g.player} {g.minute}'{idx < awayGoals.length - 1 ? ',' : ''}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <TeamLogo
             teamName={match.awayTeam.name}
